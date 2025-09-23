@@ -58,7 +58,7 @@ public static void main(String[] args) throws InterruptedException, SocketExcept
         System.out.println("Broadcasting and delivering messages...\n");
 
 
-        ArrayList<ShittyLink> sls = new ArrayList<>();
+        System.out.println("Start links");
         for(Host h: parser.hosts()){
             System.out.println(h.getId());
             if(h.getId() == parser.myId()){
@@ -66,11 +66,12 @@ public static void main(String[] args) throws InterruptedException, SocketExcept
             }
             System.out.println("Made a shitty link");
             ShittyLink s = new ShittyLink(h);
-            sls.add(s);
             s.start();
         }
+        System.out.println("Start links  done");
 
-        // After a process finishes broadcasting,
+
+    // After a process finishes broadcasting,
         // it waits forever for the delivery of messages.
         while (true) {
             // Sleep for 1 hour
