@@ -62,9 +62,7 @@ public static void main(String[] args) throws InterruptedException, SocketExcept
     System.out.println("Start links");
         for(Host h: parser.hosts()){
             System.out.println(h.getId());
-            if(h.getId() == parser.myId()){
-                continue;
-            }
+
             System.out.println("Made a shitty link");
             ShittyLink s = new ShittyLink(h);
             s.start();
