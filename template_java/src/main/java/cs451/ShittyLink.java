@@ -22,6 +22,7 @@ public class ShittyLink extends Thread {
         try {
             sendAndReceive();
         } catch (IOException e) {
+            System.out.println(":(");
             throw new RuntimeException(e);
         }
     }

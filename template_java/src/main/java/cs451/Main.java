@@ -63,7 +63,7 @@ public static void main(String[] args) throws InterruptedException, SocketExcept
             if(h.getId() == parser.myId()){
                 continue;
             }
-
+            System.out.println("Made a shitty link");
             ShittyLink s = new ShittyLink(h);
             sls.add(s);
             s.start();
