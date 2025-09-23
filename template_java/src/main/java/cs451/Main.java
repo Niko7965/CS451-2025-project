@@ -57,7 +57,6 @@ public static void main(String[] args) throws InterruptedException, SocketExcept
 
     System.out.println("Broadcasting and delivering messages...\n");
 
-    Thread.sleep(30 * 1000);
 
 
     System.out.println("Start links");
