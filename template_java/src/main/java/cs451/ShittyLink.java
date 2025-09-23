@@ -14,9 +14,9 @@ public class ShittyLink extends Thread {
     int port;
 
     public ShittyLink(Host host) throws SocketException, UnknownHostException {
+        port = host.getPort();
         socket = new DatagramSocket(port);
         address = InetAddress.getByName(host.getIp());
-        port = host.getPort();
         id = host.getId();
     }
 
