@@ -60,14 +60,26 @@ public static void main(String[] args) throws InterruptedException, SocketExcept
 
 
     System.out.println("Start links");
-        for(Host h: parser.hosts()){
-            System.out.println(h.getId());
 
-            System.out.println("Made a shitty link");
-            ShittyLink s = new ShittyLink(h);
-            s.start();
+    ArrayList<Host> targets = new ArrayList<>();
+
+    for(Host h: parser.hosts()){
+        System.out.println("Made Listener");
+        if(h.getId() == parser.myId()){
+            LinkListener listener = new LinkListener(h);
+            listener.start();
+            continue;
         }
-        System.out.println("Start links  done");
+
+        targets.add(h);
+
+    }
+
+    System.out.println("Made sender");
+    LinkSender sender = new LinkSender(targets,parser.myId());
+    sender.start();
+
+    System.out.println("Start links  done");
 
 
     // After a process finishes broadcasting,
