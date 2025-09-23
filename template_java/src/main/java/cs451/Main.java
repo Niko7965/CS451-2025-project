@@ -60,6 +60,7 @@ public static void main(String[] args) throws InterruptedException, SocketExcept
 
         ArrayList<ShittyLink> sls = new ArrayList<>();
         for(Host h: parser.hosts()){
+            System.out.println(h.getId());
             if(h.getId() == parser.myId()){
                 continue;
             }
