@@ -26,6 +26,10 @@ public class LinkListener extends Thread {
     }
 
     public void run(){
-
+        try {
+            receive();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
