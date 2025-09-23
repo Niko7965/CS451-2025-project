@@ -31,7 +31,7 @@ public class ShittyLink extends Thread {
         while (true) {
             String message = "hello";
             byte[] buffer = message.getBytes();
-            DatagramPacket packet = new DatagramPacket(buffer,buffer.length);
+            DatagramPacket packet = new DatagramPacket(buffer,buffer.length,address, socket.getPort());
             socket.send(packet);
             System.out.println("Sent "+message+" to "+ id);
 
