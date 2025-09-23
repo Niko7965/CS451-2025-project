@@ -1,9 +1,8 @@
 package cs451;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class Main {
 
@@ -13,18 +12,18 @@ public class Main {
 
         //write/flush output file if necessary
         System.out.println("Writing output.");
-    }
+}
 
-    private static void initSignalHandlers() {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                handleSignal();
-            }
-        });
-    }
+private static void initSignalHandlers() {
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+        @Override
+        public void run() {
+            handleSignal();
+        }
+    });
+}
 
-    public static void main(String[] args) throws InterruptedException {
+public static void main(String[] args) throws InterruptedException, SocketException, UnknownHostException {
         Parser parser = new Parser(args);
         parser.parse();
 
@@ -57,6 +56,18 @@ public class Main {
         System.out.println("Doing some initialization\n");
 
         System.out.println("Broadcasting and delivering messages...\n");
+
+
+        ArrayList<ShittyLink> sls = new ArrayList<>();
+        for(Host h: parser.hosts()){
+            if(h.getId() == parser.myId()){
+                continue;
+            }
+
+            ShittyLink s = new ShittyLink(h);
+            sls.add(s);
+            s.start();
+        }
 
         // After a process finishes broadcasting,
         // it waits forever for the delivery of messages.
