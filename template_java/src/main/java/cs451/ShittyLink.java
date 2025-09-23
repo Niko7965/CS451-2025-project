@@ -11,10 +11,12 @@ public class ShittyLink extends Thread {
     DatagramSocket socket;
     InetAddress address;
     int id;
+    int port;
 
     public ShittyLink(Host host) throws SocketException, UnknownHostException {
-        socket = new DatagramSocket(host.getPort());
+        socket = new DatagramSocket();
         address = InetAddress.getByName(host.getIp());
+        port = host.getPort();
         id = host.getId();
     }
 
@@ -31,7 +33,7 @@ public class ShittyLink extends Thread {
         while (true) {
             String message = "hello";
             byte[] buffer = message.getBytes();
-            DatagramPacket packet = new DatagramPacket(buffer,buffer.length,address, socket.getPort());
+            DatagramPacket packet = new DatagramPacket(buffer,buffer.length,address, port);
             socket.send(packet);
             System.out.println("Sent "+message+" to "+ id);
 
