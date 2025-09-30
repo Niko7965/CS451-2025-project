@@ -2,11 +2,8 @@ package cs451;
 
 import cs451.PerfectLinks.PerfectLink;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
+
 
 public class Main {
 
@@ -66,7 +63,7 @@ public static void main(String[] args) throws InterruptedException, IOException 
     System.out.println("Start links");
 
 
-    PerfectLink perfectLink = new PerfectLink(hostFromId(parser.myId(),parser));
+    PerfectLink perfectLink = new PerfectLink(hostFromId(parser.myId(),parser),new CallbackLogger());
 
     PLCFGParser taskParser = new PLCFGParser(parser.config());
     if(!(parser.myId() == taskParser.getReceiverId())){
@@ -76,6 +73,14 @@ public static void main(String[] args) throws InterruptedException, IOException 
             perfectLink.sendMessage(""+i,receiverHost);
         }
     }
+
+    // After a process finishes broadcasting,
+    // it waits forever for the delivery of messages.
+    while (true) {
+        // Sleep for 1 hour
+        Thread.sleep(60 * 60 * 1000);
+    }
+
 }
 
 public static Host hostFromId(int id, Parser parser){

@@ -32,8 +32,7 @@ public class StubbornLinkSender extends Thread{
 
     private DatagramPacket makePacket(String message, Host target) throws UnknownHostException {
         String toSend = this.id+" "+target.getId()+" "+message;
-
-        byte[] buffer = message.getBytes();
+        byte[] buffer = toSend.getBytes();
         InetAddress address = InetAddress.getByName(target.getIp());
         return new DatagramPacket(buffer, 0, buffer.length, address, target.getPort());
     }

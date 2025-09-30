@@ -19,13 +19,15 @@ public class PerfectLink implements OnDeliverCallBack {
     ArrayList<Message> delivered; //todo replace with hashset
 
 
-    public PerfectLink(Host selfHost) throws SocketException, UnknownHostException {
+    public PerfectLink(Host selfHost,OnDeliverCallBack callBack) throws SocketException, UnknownHostException {
         this.stubbornLinkListener = new StubbornLinkListener(selfHost,this);
         this.stubbornLinkListener.start();
+        this.callBack = callBack;
         this.stubbornLinkSender = new StubbornLinkSender(selfHost.getId());
     }
 
     public void sendMessage(String content, Host target) throws IOException {
+        System.out.println("b "+content);
         stubbornLinkSender.send(content, target);
     }
 
