@@ -66,7 +66,7 @@ public static void main(String[] args) throws InterruptedException, SocketExcept
     for(Host h: parser.hosts()){
         System.out.println("Made Listener");
         if(h.getId() == parser.myId()){
-            LinkListener listener = new LinkListener(h);
+            StubbornLinkListener listener = new StubbornLinkListener(h);
             listener.start();
             continue;
         }
@@ -76,8 +76,7 @@ public static void main(String[] args) throws InterruptedException, SocketExcept
     }
 
     System.out.println("Made sender");
-    LinkSender sender = new LinkSender(targets,parser.myId());
-    sender.start();
+    StubbornLinkSender sender = new StubbornLinkSender(targets,parser.myId());
 
     System.out.println("Start links  done");
 
