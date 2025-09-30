@@ -1,8 +1,9 @@
 package cs451;
 
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
+import cs451.PerfectLinks.PerfectLink;
+
+import java.io.IOException;
+
 
 public class Main {
 
@@ -23,7 +24,7 @@ private static void initSignalHandlers() {
     });
 }
 
-public static void main(String[] args) throws InterruptedException, SocketException, UnknownHostException {
+public static void main(String[] args) throws InterruptedException, IOException {
     Parser parser = new Parser(args);
     parser.parse();
 
@@ -61,32 +62,29 @@ public static void main(String[] args) throws InterruptedException, SocketExcept
 
     System.out.println("Start links");
 
-    ArrayList<Host> targets = new ArrayList<>();
 
-    for(Host h: parser.hosts()){
-        System.out.println("Made Listener");
-        if(h.getId() == parser.myId()){
-            LinkListener listener = new LinkListener(h);
-            listener.start();
-            continue;
+    PerfectLink perfectLink = new PerfectLink(hostFromId(parser.myId(),parser),new CallbackLogger());
+
+    PLCFGParser taskParser = new PLCFGParser(parser.config());
+    if(!(parser.myId() == taskParser.getReceiverId())){
+        Host receiverHost = hostFromId(taskParser.getReceiverId(),parser);
+
+        for(int i = 1; i <= taskParser.getNoOfMessages();i++){
+            perfectLink.sendMessage(""+i,receiverHost);
         }
-
-        targets.add(h);
-
     }
-
-    System.out.println("Made sender");
-    LinkSender sender = new LinkSender(targets,parser.myId());
-    sender.start();
-
-    System.out.println("Start links  done");
-
 
     // After a process finishes broadcasting,
-        // it waits forever for the delivery of messages.
-        while (true) {
-            // Sleep for 1 hour
-            Thread.sleep(60 * 60 * 1000);
-        }
+    // it waits forever for the delivery of messages.
+    while (true) {
+        // Sleep for 1 hour
+        Thread.sleep(60 * 60 * 1000);
     }
+
+}
+
+public static Host hostFromId(int id, Parser parser){
+    return parser.hosts().stream().filter(h -> h.getId() == id).findFirst().get();
+}
+
 }
