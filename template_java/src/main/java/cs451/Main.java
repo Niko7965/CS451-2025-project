@@ -1,5 +1,9 @@
 package cs451;
 
+import cs451.PerfectLinks.PerfectLink;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -23,7 +27,7 @@ private static void initSignalHandlers() {
     });
 }
 
-public static void main(String[] args) throws InterruptedException, SocketException, UnknownHostException {
+public static void main(String[] args) throws InterruptedException, IOException {
     Parser parser = new Parser(args);
     parser.parse();
 
@@ -61,31 +65,21 @@ public static void main(String[] args) throws InterruptedException, SocketExcept
 
     System.out.println("Start links");
 
-    ArrayList<Host> targets = new ArrayList<>();
 
-    for(Host h: parser.hosts()){
-        System.out.println("Made Listener");
-        if(h.getId() == parser.myId()){
-            StubbornLinkListener listener = new StubbornLinkListener(h);
-            listener.start();
-            continue;
-        }
+    PerfectLink perfectLink = new PerfectLink(hostFromId(parser.myId(),parser));
 
-        targets.add(h);
+    PLCFGParser taskParser = new PLCFGParser(parser.config());
+    if(!(parser.myId() == taskParser.getReceiverId())){
+        Host receiverHost = hostFromId(taskParser.getReceiverId(),parser);
 
-    }
-
-    System.out.println("Made sender");
-    StubbornLinkSender sender = new StubbornLinkSender(targets,parser.myId());
-
-    System.out.println("Start links  done");
-
-
-    // After a process finishes broadcasting,
-        // it waits forever for the delivery of messages.
-        while (true) {
-            // Sleep for 1 hour
-            Thread.sleep(60 * 60 * 1000);
+        for(int i = 1; i <= taskParser.getNoOfMessages();i++){
+            perfectLink.sendMessage(""+i,receiverHost);
         }
     }
+}
+
+public static Host hostFromId(int id, Parser parser){
+    return parser.hosts().stream().filter(h -> h.getId() == id).findFirst().get();
+}
+
 }
