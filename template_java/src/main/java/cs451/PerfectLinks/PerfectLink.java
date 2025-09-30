@@ -24,6 +24,7 @@ public class PerfectLink implements OnDeliverCallBack {
         this.stubbornLinkListener.start();
         this.callBack = callBack;
         this.stubbornLinkSender = new StubbornLinkSender(selfHost.getId());
+        this.stubbornLinkSender.start();
     }
 
     public void sendMessage(String content, Host target) throws IOException {
