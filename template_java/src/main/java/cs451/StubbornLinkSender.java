@@ -12,6 +12,7 @@ public class StubbornLinkSender extends Thread{
 
     public StubbornLinkSender(int selfId) throws SocketException {
         socket = new DatagramSocket();
+        toRepeat = new ArrayList<>();
         this.id = selfId;
     }
 
