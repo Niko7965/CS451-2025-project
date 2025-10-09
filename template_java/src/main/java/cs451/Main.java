@@ -6,11 +6,17 @@ import java.io.IOException;
 
 
 public class Main {
+    static OutputWriter outputWriter;
 
     private static void handleSignal() {
         //immediately stop network packet processing
         System.out.println("Immediately stopping network packet processing.");
 
+        try {
+            outputWriter.close();
+
+        } catch (IOException ignored) {
+        }
         //write/flush output file if necessary
         System.out.println("Writing output.");
 }
@@ -62,10 +68,14 @@ public static void main(String[] args) throws InterruptedException, IOException 
 
     System.out.println("Start links");
 
+    outputWriter = new OutputWriter(parser.output());
 
-    PerfectLink perfectLink = new PerfectLink(hostFromId(parser.myId(),parser),new CallbackLogger());
+
+    PerfectLink perfectLink = new PerfectLink(hostFromId(parser.myId(),parser),new CallbackLogger(outputWriter),outputWriter);
 
     PLCFGParser taskParser = new PLCFGParser(parser.config());
+
+
     if(!(parser.myId() == taskParser.getReceiverId())){
         Host receiverHost = hostFromId(taskParser.getReceiverId(),parser);
 
