@@ -10,6 +10,23 @@ public class StubbornLinkSender extends Thread{
     DatagramSocket socket;
     int id;
 
+    final Object lock = new Object();
+
+    private boolean allowedToSend = true;
+
+    public void pause(){
+        synchronized (lock){
+            allowedToSend = false;
+
+        }
+    }
+
+    public void unpause(){
+        synchronized (lock){
+            allowedToSend = true;
+        }
+    }
+
     public StubbornLinkSender(int selfId) throws SocketException {
         socket = new DatagramSocket();
         toRepeat = new ArrayList<>();
@@ -17,16 +34,30 @@ public class StubbornLinkSender extends Thread{
     }
 
     public void send(String message, Host target) throws IOException {
-        DatagramPacket packet = makePacket(message,target);
-        toRepeat.add(packet);
-        socket.send(packet);
+        synchronized (lock) {
+            if (!allowedToSend) {
+                return;
+            }
+
+            DatagramPacket packet = makePacket(message, target);
+            toRepeat.add(packet);
+            socket.send(packet);
+        }
+    }
+
+    private void sendBySocket(DatagramPacket packet) throws IOException {
+        synchronized (lock) {
+            if (allowedToSend) {
+                socket.send(packet);
+            }
+        }
     }
 
     public void repeat() throws IOException {
         //hate this todo
         while(true){
             for(DatagramPacket p: toRepeat){
-                socket.send(p);
+                sendBySocket(p);
             }
         }
     }

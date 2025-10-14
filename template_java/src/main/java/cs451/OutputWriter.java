@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class OutputWriter {
+//https://www.baeldung.com/java-synchronized was used as reference for sync
 
     private final BufferedWriter writer;
 

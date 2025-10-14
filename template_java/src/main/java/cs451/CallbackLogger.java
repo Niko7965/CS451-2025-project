@@ -10,7 +10,7 @@ public class CallbackLogger implements OnDeliverCallBack {
     public void onDeliver(Message m) {
         System.out.println("d "+m.sender+" "+m.content);
         try {
-            outputWriter.write("d "+m.sender+" "+m.content);
+            outputWriter.write("d "+m.sender+" "+m.content+"\n");
         } catch (IOException ignored) {
 
         }

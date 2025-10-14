@@ -19,6 +19,7 @@ public class PerfectLink implements OnDeliverCallBack {
     ArrayList<Message> delivered; //todo replace with hashset
     OutputWriter outputWriter;
 
+    boolean paused;
 
     public PerfectLink(Host selfHost,OnDeliverCallBack callBack, OutputWriter w) throws SocketException, UnknownHostException {
         this.stubbornLinkListener = new StubbornLinkListener(selfHost,this);
@@ -28,12 +29,14 @@ public class PerfectLink implements OnDeliverCallBack {
         this.stubbornLinkSender.start();
         this.delivered = new ArrayList<>();
         this.outputWriter = w;
+        paused = false;
     }
 
     public void sendMessage(String content, Host target) throws IOException {
         System.out.println("b "+content);
-        outputWriter.write("b "+content);
+        outputWriter.write("b "+content+"\n");
         stubbornLinkSender.send(content, target);
+
     }
 
 
