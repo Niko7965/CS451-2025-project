@@ -71,6 +71,7 @@ public class StubbornLinkSender extends Thread{
                     DatagramPacket p = makePacket(m, true);
                     synchronized (socket){
                         socket.send(p);
+                        System.out.println("Sent ack for "+ m.content);
                     }
                 }
                 toAck.clear();
@@ -80,6 +81,7 @@ public class StubbornLinkSender extends Thread{
                 synchronized (toRepeat){
                     for(Message m: messagedThatHaveBeenAckedByOther){
                         toRepeat.remove(m);
+                        System.out.println("Removed "+ m.content);
                     }
                 }
             }
