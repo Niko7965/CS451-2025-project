@@ -3,62 +3,47 @@ package cs451;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class StubbornLinkSender extends Thread{
 
-    ArrayList<DatagramPacket> toRepeat;
+    List<DatagramPacket> toRepeat;
     DatagramSocket socket;
     int id;
 
-    final Object lock = new Object();
 
-    private boolean allowedToSend = true;
-
-    public void pause(){
-        synchronized (lock){
-            allowedToSend = false;
-
-        }
-    }
-
-    public void unpause(){
-        synchronized (lock){
-            allowedToSend = true;
-        }
-    }
 
     public StubbornLinkSender(int selfId) throws SocketException {
         socket = new DatagramSocket();
-        toRepeat = new ArrayList<>();
+        toRepeat = Collections.synchronizedList(new ArrayList<>());
         this.id = selfId;
     }
 
     public void send(String message, Host target) throws IOException {
-        synchronized (lock) {
-            if (!allowedToSend) {
-                return;
-            }
-
-            DatagramPacket packet = makePacket(message, target);
-            toRepeat.add(packet);
-            socket.send(packet);
-        }
+        DatagramPacket packet = makePacket(message, target);
+        toRepeat.add(packet);
+        sendBySocket(packet);
     }
 
-    private void sendBySocket(DatagramPacket packet) throws IOException {
-        synchronized (lock) {
-            if (allowedToSend) {
-                socket.send(packet);
-            }
-        }
+    private synchronized void sendBySocket(DatagramPacket packet) throws IOException {
+        socket.send(packet);
     }
 
-    public void repeat() throws IOException {
+    public void repeat() throws IOException, InterruptedException {
         //hate this todo
+        List<DatagramPacket> currentMessagesToRepeat = new ArrayList<>();
+
         while(true){
-            for(DatagramPacket p: toRepeat){
+            Thread.sleep(1000);
+            synchronized (toRepeat) {
+                currentMessagesToRepeat = new ArrayList<>(toRepeat);
+            }
+            for(DatagramPacket p: currentMessagesToRepeat){
                 sendBySocket(p);
             }
+
         }
     }
 
@@ -72,7 +57,7 @@ public class StubbornLinkSender extends Thread{
     public void run(){
         try {
             repeat();
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
