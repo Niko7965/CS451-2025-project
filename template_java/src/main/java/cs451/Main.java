@@ -75,12 +75,16 @@ public static void main(String[] args) throws InterruptedException, IOException 
 
     PLCFGParser taskParser = new PLCFGParser(parser.config());
 
+    Phonebook.init(parser.hosts());
+    int myId = parser.myId();
 
-    if(!(parser.myId() == taskParser.getReceiverId())){
+
+    if(!(myId== taskParser.getReceiverId())){
         Host receiverHost = hostFromId(taskParser.getReceiverId(),parser);
 
         for(int i = 1; i <= taskParser.getNoOfMessages();i++){
-            perfectLink.sendMessage(""+i,receiverHost);
+            Message m = new Message(myId,"i", receiverHost.getId(),false);
+            perfectLink.sendMessage(m);
         }
     }
 

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 //Each perfect link spawns two threads, one for the listener and sender of stubborn links,
 //as each needs to loop forever
 //Therefore, we should strive not to create multiple perfect links
-public class PerfectLink implements OnDeliverCallBack {
+public class PerfectLink implements OnDeliverCallBack, AckCallBack {
 
     OnDeliverCallBack callBack;
     StubbornLinkListener stubbornLinkListener;
@@ -22,7 +22,7 @@ public class PerfectLink implements OnDeliverCallBack {
     boolean paused;
 
     public PerfectLink(Host selfHost,OnDeliverCallBack callBack, OutputWriter w) throws SocketException, UnknownHostException {
-        this.stubbornLinkListener = new StubbornLinkListener(selfHost,this);
+        this.stubbornLinkListener = new StubbornLinkListener(selfHost,this,this);
         this.stubbornLinkListener.start();
         this.callBack = callBack;
         this.stubbornLinkSender = new StubbornLinkSender(selfHost.getId());
@@ -32,11 +32,10 @@ public class PerfectLink implements OnDeliverCallBack {
         paused = false;
     }
 
-    public void sendMessage(String content, Host target) throws IOException {
-        System.out.println("b "+content);
-        outputWriter.write("b "+content+"\n");
-        stubbornLinkSender.send(content, target);
-
+    public void sendMessage(Message m) throws IOException {
+        System.out.println("b "+m.content);
+        outputWriter.write("b "+m.content+"\n");
+        stubbornLinkSender.sendMessage(m);
     }
 
 
@@ -44,7 +43,13 @@ public class PerfectLink implements OnDeliverCallBack {
     public void onDeliver(Message m) {
         if(!delivered.contains(m)){
             delivered.add(m);
+            stubbornLinkSender.sendAck(m);
             callBack.onDeliver(m);
         }
+    }
+
+    @Override
+    public void onAcknowledgement(Message m) {
+        stubbornLinkSender.receiveAck(m);
     }
 }

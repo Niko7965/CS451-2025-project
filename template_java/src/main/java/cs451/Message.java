@@ -1,17 +1,24 @@
 package cs451;
 
-import java.net.DatagramPacket;
 
 public class Message {
     int sender;
-    String content;
+    public String content;
+    int target;
+    boolean isAck;
 
-    public Message(int sender, String content){
+
+    public Message(int sender, String content, int target, boolean isAck){
         this.sender = sender;
         this.content = content;
+        this.target = target;
+        this.isAck = isAck;
     }
 
+    //TODO NOTE - Currently matches even if one is ack, and other is not
     public boolean equals(Message other){
-        return other.sender == this.sender && other.content.equals(this.content);
+        return other.sender == this.sender && this.target == other.target && other.content.equals(this.content);
     }
+
+
 }
