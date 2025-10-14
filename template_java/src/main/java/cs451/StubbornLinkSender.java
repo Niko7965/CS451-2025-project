@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class StubbornLinkSender extends Thread{
 
-    List<DatagramPacket> toRepeat;
+    final List<DatagramPacket> toRepeat;
     DatagramSocket socket;
     int id;
 
@@ -23,7 +23,9 @@ public class StubbornLinkSender extends Thread{
 
     public void send(String message, Host target) throws IOException {
         DatagramPacket packet = makePacket(message, target);
-        toRepeat.add(packet);
+        synchronized (toRepeat){
+            toRepeat.add(packet);
+        }
         sendBySocket(packet);
     }
 
@@ -32,8 +34,7 @@ public class StubbornLinkSender extends Thread{
     }
 
     public void repeat() throws IOException, InterruptedException {
-        //hate this todo
-        List<DatagramPacket> currentMessagesToRepeat = new ArrayList<>();
+        List<DatagramPacket> currentMessagesToRepeat;
 
         while(true){
             Thread.sleep(1000);
