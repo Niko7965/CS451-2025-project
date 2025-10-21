@@ -16,7 +16,7 @@ public class PerfectLink implements OnDeliverCallBack, AckCallBack {
     OnDeliverCallBack callBack;
     StubbornLinkListener stubbornLinkListener;
     StubbornLinkSender stubbornLinkSender;
-    ArrayList<Message> delivered; //todo replace with hashset
+    ArrayList<PLMessageRegular> delivered; //todo replace with hashset
     OutputWriter outputWriter;
 
     boolean paused;
@@ -32,24 +32,24 @@ public class PerfectLink implements OnDeliverCallBack, AckCallBack {
         paused = false;
     }
 
-    public void sendMessage(Message m) throws IOException {
-        System.out.println("b "+m.content);
-        outputWriter.write("b "+m.content+"\n");
+    public void sendMessage(PLMessageRegular m) throws IOException {
+        System.out.println("b "+m.payload);
+        outputWriter.write("b "+m.payload +"\n");
         stubbornLinkSender.sendMessage(m);
     }
 
 
     @Override
-    public void onDeliver(Message m) {
+    public void onDeliver(PLMessageRegular m) {
         if(!delivered.contains(m)){
             delivered.add(m);
-            stubbornLinkSender.sendAck(m);
+            stubbornLinkSender.sendAck(m.simpleAck());
             callBack.onDeliver(m);
         }
     }
 
     @Override
-    public void onAcknowledgement(Message m) {
+    public void onAcknowledgement(PLAckMessage m) {
         stubbornLinkSender.receiveAck(m);
     }
 }

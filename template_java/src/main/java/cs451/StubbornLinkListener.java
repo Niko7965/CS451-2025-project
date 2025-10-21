@@ -1,5 +1,10 @@
 package cs451;
 
+import cs451.PerfectLinks.AckCallBack;
+import cs451.PerfectLinks.PLAckMessage;
+import cs451.PerfectLinks.PLMessage;
+import cs451.PerfectLinks.PLMessageRegular;
+
 import java.io.IOException;
 import java.net.*;
 
@@ -24,26 +29,22 @@ public class StubbornLinkListener extends Thread {
         DatagramPacket packet = new DatagramPacket(buffer,buffer.length);
         while(true){
             socket.receive(packet);
-            Message m = messageFromPacket(packet);
-            if(m.isAck){
-                ackCallBack.onAcknowledgement(m);
+
+            String packetString = new String(packet.getData(),0,packet.getLength());
+            PLMessage message = PLMessage.fromString(packetString);
+
+
+            if(message.isAck()){
+                ackCallBack.onAcknowledgement((PLAckMessage) message);
+
                 return;
             }
-            deliverCallBack.onDeliver(m);
+            deliverCallBack.onDeliver((PLMessageRegular) message);
         }
     }
 
-    public Message messageFromPacket(DatagramPacket packet){
-        String packetString = new String(packet.getData(),0,packet.getLength());
-        String[] contents = packetString.split(" ");
-        String type = contents[0];
-        boolean isAck = type.equals("ACK");
-        int sender = Integer.parseInt(contents[1]);
-        int receiver = Integer.parseInt(contents[2]);
-        String content = contents[3];
 
-        return new Message(sender,content,receiver,isAck);
-    }
+
 
     public void run(){
         try {

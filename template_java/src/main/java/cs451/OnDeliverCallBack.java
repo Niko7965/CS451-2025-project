@@ -1,5 +1,7 @@
 package cs451;
 
+import cs451.PerfectLinks.PLMessageRegular;
+
 public interface OnDeliverCallBack {
-    public void onDeliver(Message m);
+    void onDeliver(PLMessageRegular m);
 }

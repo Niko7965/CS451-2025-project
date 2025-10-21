@@ -1,5 +1,7 @@
 package cs451;
 
+import cs451.PerfectLinks.PLMessageRegular;
+
 import java.io.IOException;
 
 public class CallbackLogger implements OnDeliverCallBack {
@@ -7,10 +9,10 @@ public class CallbackLogger implements OnDeliverCallBack {
     OutputWriter outputWriter;
 
     @Override
-    public void onDeliver(Message m) {
-        System.out.println("d "+m.sender+" "+m.content);
+    public void onDeliver(PLMessageRegular m) {
+        System.out.println("d "+m.sender+" "+m.payload);
         try {
-            outputWriter.write("d "+m.sender+" "+m.content+"\n");
+            outputWriter.write("d "+m.sender+" "+m.payload +"\n");
         } catch (IOException ignored) {
 
         }

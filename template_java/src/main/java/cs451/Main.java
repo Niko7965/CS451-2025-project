@@ -1,5 +1,6 @@
 package cs451;
 
+import cs451.PerfectLinks.PLMessageRegular;
 import cs451.PerfectLinks.PerfectLink;
 
 import java.io.IOException;
@@ -83,7 +84,7 @@ public static void main(String[] args) throws InterruptedException, IOException 
         Host receiverHost = hostFromId(taskParser.getReceiverId(),parser);
 
         for(int i = 1; i <= taskParser.getNoOfMessages();i++){
-            Message m = new Message(myId,""+i, receiverHost.getId(),false);
+            PLMessageRegular m = new PLMessageRegular(myId,""+i, receiverHost.getId());
             perfectLink.sendMessage(m);
         }
     }
