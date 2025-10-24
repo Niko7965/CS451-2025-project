@@ -112,6 +112,7 @@ public class StubbornLinkSender extends Thread{
         Host target = Phonebook.hostFromId(ackMessage.hostToAck);
         //ACK + ack-sender + ack-receiver + message sender + message content + message receiver
         String toSend = "ACK "+ackMessage.hostThatAcks + " "+ackMessage.hostToAck + " " + ackMessage.message.sender +" "+ackMessage.message.payload +" "+ackMessage.message.receiver;
+        System.out.println("TOSEND-ACK: "+ toSend);
         byte[] buffer = toSend.getBytes();
         InetAddress address = InetAddress.getByName(target.getIp());
         return new DatagramPacket(buffer, 0, buffer.length, address, target.getPort());
@@ -120,6 +121,7 @@ public class StubbornLinkSender extends Thread{
     private DatagramPacket makePacketForReg(PLMessageRegular message) throws UnknownHostException {
         Host target = Phonebook.hostFromId(message.receiver);
         String toSend = message.toString();
+        System.out.println("TOSEND: "+ toSend);
         byte[] buffer = toSend.getBytes();
         InetAddress address = InetAddress.getByName(target.getIp());
         return new DatagramPacket(buffer, 0, buffer.length, address, target.getPort());
