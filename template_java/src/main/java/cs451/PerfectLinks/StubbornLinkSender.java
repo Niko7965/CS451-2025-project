@@ -54,7 +54,8 @@ public class StubbornLinkSender extends Thread{
 
     public void repeat() throws IOException, InterruptedException {
         while(true){
-            //Thread.sleep(1000); //todo, should this delay be here?
+            //noinspection BusyWait
+            Thread.sleep(1000); //todo, should this delay be here?
 
 
             //Send messages that have not yet been acked
