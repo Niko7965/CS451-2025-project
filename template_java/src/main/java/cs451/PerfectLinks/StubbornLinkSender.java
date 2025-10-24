@@ -55,7 +55,7 @@ public class StubbornLinkSender extends Thread{
     public void repeat() throws IOException, InterruptedException {
         while(true){
             //noinspection BusyWait
-            Thread.sleep(1000); //todo, should this delay be here?
+            Thread.sleep(10); //todo, should this delay be here?
 
 
             //Send messages that have not yet been acked
@@ -112,7 +112,6 @@ public class StubbornLinkSender extends Thread{
     private DatagramPacket makePacketForAck(PLAckMessage ackMessage) throws UnknownHostException {
         Host target = Phonebook.hostFromId(ackMessage.hostToAck);
         String toSend = ackMessage.toString();
-        System.out.println("TOSEND-ACK: "+ toSend);
         byte[] buffer = toSend.getBytes();
         InetAddress address = InetAddress.getByName(target.getIp());
         return new DatagramPacket(buffer, 0, buffer.length, address, target.getPort());
@@ -121,7 +120,6 @@ public class StubbornLinkSender extends Thread{
     private DatagramPacket makePacketForReg(PLMessageRegular message) throws UnknownHostException {
         Host target = Phonebook.hostFromId(message.receiver);
         String toSend = message.toString();
-        System.out.println("TOSEND: "+ toSend);
         byte[] buffer = toSend.getBytes();
         InetAddress address = InetAddress.getByName(target.getIp());
         return new DatagramPacket(buffer, 0, buffer.length, address, target.getPort());
