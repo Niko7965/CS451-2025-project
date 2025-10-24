@@ -3,7 +3,6 @@ package cs451.PerfectLinks;
 public abstract class PLMessage {
 
     public static PLMessage fromString(String s){
-        System.out.println(s);
         String[] contents = s.split(" ");
         return fromStringArr(contents);
     }
