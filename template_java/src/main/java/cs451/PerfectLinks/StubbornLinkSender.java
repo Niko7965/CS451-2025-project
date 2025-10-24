@@ -111,7 +111,6 @@ public class StubbornLinkSender extends Thread{
     }
     private DatagramPacket makePacketForAck(PLAckMessage ackMessage) throws UnknownHostException {
         Host target = Phonebook.hostFromId(ackMessage.hostToAck);
-        //ACK + ack-sender + ack-receiver + message sender + message content + message receiver
         String toSend = ackMessage.toString();
         System.out.println("TOSEND-ACK: "+ toSend);
         byte[] buffer = toSend.getBytes();

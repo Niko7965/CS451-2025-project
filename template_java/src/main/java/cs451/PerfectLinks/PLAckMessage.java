@@ -15,6 +15,7 @@ public class PLAckMessage extends PLMessage {
 
     @Override
     public String toString(){
+        System.out.println("Message to ack "+message.toString());
         return "ACK "+this.hostThatAcks + " "+this.hostToAck + " " + message.toString();
     }
 
