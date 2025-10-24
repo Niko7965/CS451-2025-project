@@ -1,5 +1,7 @@
 package cs451.PerfectLinks;
 
+import java.util.Arrays;
+
 public class PLAckMessage extends PLMessage {
     public PLMessageRegular message;
     public int hostToAck;
@@ -11,15 +13,17 @@ public class PLAckMessage extends PLMessage {
         this.hostThatAcks = hostThatAcks;
     }
 
+    @Override
+    public String toString(){
+        return "ACK "+this.hostThatAcks + " "+this.hostToAck + " " + message.toString();
+    }
+
     public PLAckMessage(String[] contents){
         this.hostThatAcks = Integer.parseInt(contents[1]);
         this.hostToAck = Integer.parseInt(contents[2]);
 
-        int messageSender = Integer.parseInt(contents[3]);
-        String messagePayload = contents[4];
-        int messageReceiver = Integer.parseInt(contents[5]);
-
-        this.message = new PLMessageRegular(messageSender,messagePayload,messageReceiver);
+        String[] regMessageContents = Arrays.copyOfRange(contents,3,contents.length);
+        this.message = (PLMessageRegular) PLMessage.fromStringArr(regMessageContents);
 
     }
 

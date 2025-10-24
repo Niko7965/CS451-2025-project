@@ -1,19 +1,17 @@
-package cs451;
+package cs451.PerfectLinks;
 
-import cs451.PerfectLinks.PLAckMessage;
-import cs451.PerfectLinks.PLMessageRegular;
+import cs451.Host;
+import cs451.Phonebook;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class StubbornLinkSender extends Thread{
 
     final List<PLAckMessage> toAck;
     final List<PLAckMessage> messagedThatHaveBeenAckedByOther;
-    final List<PLMessageRegular> toRepeat;
+    final HashMap<Integer,TargetQueue> toSend;
     final DatagramSocket socket;
     int id;
 
@@ -21,27 +19,24 @@ public class StubbornLinkSender extends Thread{
 
     public StubbornLinkSender(int selfId) throws SocketException {
         socket = new DatagramSocket();
-        toRepeat = Collections.synchronizedList(new ArrayList<>());
         toAck = Collections.synchronizedList(new ArrayList<>());
         messagedThatHaveBeenAckedByOther = Collections.synchronizedList(new ArrayList<>());
+        this.toSend = new HashMap<>();
         this.id = selfId;
     }
 
     public void sendMessage(PLMessageRegular message) {
-        synchronized (toRepeat){
-            toRepeat.add(message);
+        synchronized (toSend){
+            if(!toSend.containsKey(message.receiver)){
+                toSend.put(message.receiver,new TargetQueue());
+            }
+
+            toSend.get(message.receiver).enqueueMessage(message);
         }
+
+
     }
 
-
-
-    //todo
-    /*
-    There is something here about later
-    we might have that p1 sends to p2 a message.
-    But the message is that p3 sends to p4
-    In other words I have some clutter around what a sender and receiver is
-     */
 
     public void sendAck(PLAckMessage m){
         synchronized (toAck){
@@ -63,13 +58,23 @@ public class StubbornLinkSender extends Thread{
 
 
             //Send messages that have not yet been acked
-            synchronized (toRepeat) {
-                for (PLMessageRegular m : toRepeat) {
-                    DatagramPacket p = makePacket(m);
+            synchronized (toSend) {
+
+                for(TargetQueue t : toSend.values()){
+                    Optional<PLMessageRegular> mOpt = t.getCurrent();
+                    if(mOpt.isEmpty()){
+                        continue;
+                    }
+                    PLMessageRegular m = mOpt.get();
+                    int messageNo = t.getMessageNo();
+                    m.setMessageNo(messageNo);
+                    DatagramPacket p = makePacketForReg(m);
                     synchronized (socket) {
                         socket.send(p);
                     }
                 }
+
+
             }
 
             //Send acks for messages received
@@ -87,10 +92,14 @@ public class StubbornLinkSender extends Thread{
 
             //Remove acked messages from "sending" list
             synchronized (messagedThatHaveBeenAckedByOther){
-                synchronized (toRepeat){
+                synchronized (toSend){
                     for(PLAckMessage m: messagedThatHaveBeenAckedByOther){
-                        toRepeat.remove(m.message);
-                        System.out.println("Removed "+ m.message.payload);
+                        int target = m.hostThatAcks;
+                        if(!toSend.containsKey(target)){
+                            System.out.println("ERROR - ACK FROM UNKOWN HOST");
+                            return;
+                        }
+                        toSend.get(target).tryAck(m);
                     }
                 }
             }
@@ -108,9 +117,9 @@ public class StubbornLinkSender extends Thread{
         return new DatagramPacket(buffer, 0, buffer.length, address, target.getPort());
     }
 
-    private DatagramPacket makePacket(PLMessageRegular message) throws UnknownHostException {
+    private DatagramPacket makePacketForReg(PLMessageRegular message) throws UnknownHostException {
         Host target = Phonebook.hostFromId(message.receiver);
-        String toSend = "SEND "+message.sender+" "+target.getId()+" "+message.payload;
+        String toSend = message.toString();
         byte[] buffer = toSend.getBytes();
         InetAddress address = InetAddress.getByName(target.getIp());
         return new DatagramPacket(buffer, 0, buffer.length, address, target.getPort());

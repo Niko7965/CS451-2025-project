@@ -5,6 +5,7 @@ public class PLMessageRegular extends PLMessage {
     public int sender;
     public String payload;
     public int receiver;
+    private int messageNo;
 
 
     public PLMessageRegular(int sender, String payload, int receiver){
@@ -14,9 +15,18 @@ public class PLMessageRegular extends PLMessage {
     }
 
     public PLMessageRegular(String[] contents){
-        this.sender = Integer.parseInt(contents[1]);
-        this.receiver = Integer.parseInt(contents[2]);
-        this.payload = contents[3];
+        this.messageNo = Integer.parseInt(contents[1]);
+        this.sender = Integer.parseInt(contents[2]);
+        this.receiver = Integer.parseInt(contents[3]);
+        this.payload = contents[4];
+    }
+
+    public void setMessageNo(int messageNo){
+        this.messageNo = messageNo;
+    }
+
+    public int getMessageNo(){
+        return this.messageNo;
     }
 
 
@@ -29,11 +39,16 @@ public class PLMessageRegular extends PLMessage {
     }
 
     public boolean equals(PLMessageRegular other){
-        return other.sender == this.sender && this.receiver == other.receiver && other.payload.equals(this.payload);
+        return this.messageNo == other.messageNo && this.sender == other.sender && this.receiver == other.receiver && other.payload.equals(this.payload);
     }
 
     public String toString(){
-        return sender+ " "+ payload +" "+ receiver;
+        /*0*/   String s = "SEND ";
+        /*1*/   s += " "+ this.getMessageNo();
+        /*2*/   s += " "+this.sender;
+        /*3*/   s += " "+this.receiver;
+        /*4*/   s += " "+this.payload;
+        return s;
     }
 
 

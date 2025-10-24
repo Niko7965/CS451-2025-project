@@ -1,22 +1,22 @@
-package cs451;
+package cs451.PerfectLinks;
 
-import cs451.PerfectLinks.AckCallBack;
-import cs451.PerfectLinks.PLAckMessage;
-import cs451.PerfectLinks.PLMessage;
-import cs451.PerfectLinks.PLMessageRegular;
+import cs451.Host;
+import cs451.OnDeliverCallBack;
 
 import java.io.IOException;
 import java.net.*;
 
 public class StubbornLinkListener extends Thread {
 
+    DeliveredMessageTracker deliveredMessageTracker;
     OnDeliverCallBack deliverCallBack;
     AckCallBack ackCallBack;
     DatagramSocket socket;
     InetAddress address;
     int port;
 
-    public StubbornLinkListener(Host host,OnDeliverCallBack deliverCallBack, AckCallBack ackCallBack) throws SocketException, UnknownHostException {
+    public StubbornLinkListener(Host host, OnDeliverCallBack deliverCallBack, AckCallBack ackCallBack) throws SocketException, UnknownHostException {
+        deliveredMessageTracker = new DeliveredMessageTracker();
         port = host.getPort();
         socket = new DatagramSocket(port);
         address = InetAddress.getByName(host.getIp());
@@ -36,10 +36,18 @@ public class StubbornLinkListener extends Thread {
 
             if(message.isAck()){
                 ackCallBack.onAcknowledgement((PLAckMessage) message);
-
                 return;
             }
-            deliverCallBack.onDeliver((PLMessageRegular) message);
+
+            PLMessageRegular regularMessage = (PLMessageRegular) message;
+            if(deliveredMessageTracker.shouldDeliver(regularMessage)){
+                deliverCallBack.onDeliver(regularMessage);
+            }
+            if(deliveredMessageTracker.hasReceived(regularMessage)){
+                deliverCallBack.onShouldAck(regularMessage);
+            }
+
+
         }
     }
 

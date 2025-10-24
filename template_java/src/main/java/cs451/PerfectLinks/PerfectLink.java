@@ -39,17 +39,20 @@ public class PerfectLink implements OnDeliverCallBack, AckCallBack {
     }
 
 
+    //Is called every time a new unique message is received
     @Override
     public void onDeliver(PLMessageRegular m) {
-        if(!delivered.contains(m)){
-            delivered.add(m);
-            stubbornLinkSender.sendAck(m.simpleAck());
-            callBack.onDeliver(m);
-        }
+        callBack.onDeliver(m);
+    }
+
+    //Is called every time a message, which has been delivered, is received
+    @Override
+    public void onShouldAck(PLMessageRegular m) {
+        stubbornLinkSender.sendAck(m.simpleAck());
+
     }
 
     @Override
-    public void onAcknowledgement(PLAckMessage m) {
-        stubbornLinkSender.receiveAck(m);
+    public void onAcknowledgement(PLAckMessage m) {stubbornLinkSender.receiveAck(m);
     }
 }

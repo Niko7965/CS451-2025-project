@@ -4,6 +4,10 @@ public abstract class PLMessage {
 
     public static PLMessage fromString(String s){
         String[] contents = s.split(" ");
+        return fromStringArr(contents);
+    }
+
+    public static PLMessage fromStringArr(String[] contents){
         String type = contents[0];
         boolean isAck = type.equals("ACK");
 
@@ -11,8 +15,9 @@ public abstract class PLMessage {
             return new PLAckMessage(contents);
         }
         return new PLMessageRegular(contents);
-
     }
+
+
 
     public abstract boolean isAck();
 }
