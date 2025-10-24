@@ -38,7 +38,7 @@ public class StubbornLinkListener extends Thread {
 
             if(message.isAck()){
                 ackCallBack.onAcknowledgement((PLAckMessage) message);
-                return;
+                continue;
             }
 
             PLMessageRegular regularMessage = (PLMessageRegular) message;
