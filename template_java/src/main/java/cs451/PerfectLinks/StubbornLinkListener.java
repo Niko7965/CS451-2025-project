@@ -28,11 +28,9 @@ public class StubbornLinkListener extends Thread {
         byte[] buffer = new byte[256];
         DatagramPacket packet = new DatagramPacket(buffer,buffer.length);
         while(true){
-            System.out.println("LALALALA");
             socket.receive(packet);
 
             String packetString = new String(packet.getData(),0,packet.getLength());
-            System.out.println("Received package: "+packetString);
 
             PLMessage message = PLMessage.fromString(packetString);
 

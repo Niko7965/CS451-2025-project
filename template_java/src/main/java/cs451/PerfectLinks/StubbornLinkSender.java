@@ -84,7 +84,6 @@ public class StubbornLinkSender extends Thread{
                     DatagramPacket p = makePacketForAck(m);
                     synchronized (socket){
                         socket.send(p);
-                        System.out.println("Sent ack for "+ m.message.payload);
                     }
                 }
                 toAck.clear();
