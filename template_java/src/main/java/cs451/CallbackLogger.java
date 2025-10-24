@@ -18,6 +18,10 @@ public class CallbackLogger implements OnDeliverCallBack {
         }
     }
 
+    @Override
+    public void onShouldAck(PLMessageRegular m) {
+    }
+
     public CallbackLogger(OutputWriter w){
         this.outputWriter = w;
     }
