@@ -31,6 +31,8 @@ public class StubbornLinkListener extends Thread {
             socket.receive(packet);
 
             String packetString = new String(packet.getData(),0,packet.getLength());
+            System.out.println("Received package: "+packetString);
+
             PLMessage message = PLMessage.fromString(packetString);
 
 
