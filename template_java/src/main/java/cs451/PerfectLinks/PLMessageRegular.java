@@ -43,7 +43,7 @@ public class PLMessageRegular extends PLMessage {
     }
 
     public String toString(){
-        /*0*/   String s = "SEND ";
+        /*0*/   String s = "SEND";
         /*1*/   s += " "+ this.getMessageNo();
         /*2*/   s += " "+this.sender;
         /*3*/   s += " "+this.receiver;
