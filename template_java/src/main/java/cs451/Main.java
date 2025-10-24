@@ -10,7 +10,7 @@ public class Main {
     static OutputWriter outputWriter;
 
     private static void handleSignal() {
-        //immediately stop network packet processing
+        //todo immediately stop network packet processing
         System.out.println("Immediately stopping network packet processing.");
 
         try {
