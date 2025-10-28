@@ -29,7 +29,7 @@ public class StubbornLinkSender extends Thread{
         this.killLock = new Object();
     }
 
-    public void sendMessage(PLMessageRegular message) {
+    public void sendMessage(PLMessageRegular message) throws InterruptedException {
         synchronized (toSend){
             if(!toSend.containsKey(message.receiver)){
                 toSend.put(message.receiver,new TargetQueue());
@@ -129,6 +129,7 @@ public class StubbornLinkSender extends Thread{
 
     private DatagramPacket makePacketForReg(PLMessageRegular message) throws UnknownHostException {
         Host target = Phonebook.hostFromId(message.receiver);
+        System.out.println();
         String toSend = message.toString();
         byte[] buffer = toSend.getBytes();
         InetAddress address = InetAddress.getByName(target.getIp());
