@@ -35,6 +35,7 @@ public class Host {
             }
             return false;
         } catch (UnknownHostException e) {
+            System.out.println("Unkown host");
             e.printStackTrace();
         }
 
