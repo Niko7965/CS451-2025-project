@@ -4,15 +4,17 @@ import cs451.PerfectLinks.PLMessageRegular;
 import cs451.PerfectLinks.PerfectLink;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class Main {
     static OutputWriter outputWriter;
+    static PerfectLink pl;
 
     private static void handleSignal() {
         //todo immediately stop network packet processing
         System.out.println("Immediately stopping network packet processing.");
-
+        pl.kill();
         try {
             outputWriter.close();
 
@@ -73,7 +75,7 @@ public static void main(String[] args) throws InterruptedException, IOException 
 
 
     PerfectLink perfectLink = new PerfectLink(hostFromId(parser.myId(),parser),new CallbackLogger(outputWriter),outputWriter);
-
+    pl = perfectLink;
     PLCFGParser taskParser = new PLCFGParser(parser.config());
 
     Phonebook.init(parser.hosts());

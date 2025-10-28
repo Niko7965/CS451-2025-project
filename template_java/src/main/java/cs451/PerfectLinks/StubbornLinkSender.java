@@ -14,6 +14,8 @@ public class StubbornLinkSender extends Thread{
     final HashMap<Integer,TargetQueue> toSend;
     final DatagramSocket socket;
     int id;
+    private final Object killLock;
+    boolean killed;
 
 
 
@@ -23,6 +25,8 @@ public class StubbornLinkSender extends Thread{
         messagedThatHaveBeenAckedByOther = Collections.synchronizedList(new ArrayList<>());
         this.toSend = new HashMap<>();
         this.id = selfId;
+        this.killed = false;
+        this.killLock = new Object();
     }
 
     public void sendMessage(PLMessageRegular message) {
@@ -51,9 +55,19 @@ public class StubbornLinkSender extends Thread{
     }
 
 
+    public void kill(){
+        this.killed = true;
+    }
+
 
     public void repeat() throws IOException, InterruptedException {
         while(true){
+            synchronized (killLock){
+                if(killed){
+                    return;
+                }
+            }
+
             //noinspection BusyWait
             Thread.sleep(100); //todo, should this delay be here?
 

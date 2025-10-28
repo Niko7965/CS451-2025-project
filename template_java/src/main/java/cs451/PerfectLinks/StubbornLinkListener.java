@@ -14,6 +14,8 @@ public class StubbornLinkListener extends Thread {
     DatagramSocket socket;
     InetAddress address;
     int port;
+    boolean killed;
+    final Object killLock;
 
     public StubbornLinkListener(Host host, OnDeliverCallBack deliverCallBack, AckCallBack ackCallBack) throws SocketException, UnknownHostException {
         deliveredMessageTracker = new DeliveredMessageTracker();
@@ -22,12 +24,25 @@ public class StubbornLinkListener extends Thread {
         address = InetAddress.getByName(host.getIp());
         this.deliverCallBack = deliverCallBack;
         this.ackCallBack = ackCallBack;
+        this.killed = false;
+        this.killLock = new Object();
+    }
+
+    public void kill(){
+        synchronized (killLock){
+            this.killed = true;
+        }
     }
 
     public void receive() throws IOException {
         byte[] buffer = new byte[256];
         DatagramPacket packet = new DatagramPacket(buffer,buffer.length);
         while(true){
+            synchronized (killLock){
+                if (killed){
+                    return;
+                }
+            }
             socket.receive(packet);
 
             String packetString = new String(packet.getData(),0,packet.getLength());

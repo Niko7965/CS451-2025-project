@@ -38,6 +38,10 @@ public class PerfectLink implements OnDeliverCallBack, AckCallBack {
         stubbornLinkSender.sendMessage(m);
     }
 
+    public void kill(){
+        stubbornLinkSender.kill();
+        stubbornLinkListener.kill();
+    }
 
     //Is called every time a new unique message is received
     @Override
