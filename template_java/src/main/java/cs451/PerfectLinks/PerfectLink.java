@@ -32,7 +32,7 @@ public class PerfectLink implements OnDeliverCallBack, AckCallBack {
         paused = false;
     }
 
-    public void sendMessage(PLMessageRegular m) throws IOException {
+    public void sendMessage(PLMessageRegular m) throws IOException, InterruptedException {
         System.out.println("b "+m.payload);
         outputWriter.write("b "+m.payload +"\n");
         stubbornLinkSender.sendMessage(m);
