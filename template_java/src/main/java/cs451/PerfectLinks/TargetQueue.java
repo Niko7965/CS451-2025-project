@@ -20,7 +20,7 @@ public class TargetQueue {
         this.q = new LinkedBlockingQueue<>();
         this.messageNo = Integer.MIN_VALUE;
         this.pushLock = new Object();
-
+        this.canPush = true;
     }
 
     public Optional<PLMessageRegular> getCurrent(){
@@ -36,7 +36,6 @@ public class TargetQueue {
                 //Wait releases the above lock!
                 pushLock.wait();
             }
-
             q.add(m);
 
             if(q.size() >= MAX_QUEUE_SIZE){
