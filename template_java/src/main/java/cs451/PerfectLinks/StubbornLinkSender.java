@@ -65,8 +65,6 @@ public class StubbornLinkSender extends Thread{
                 }
             }
 
-            //noinspection BusyWait
-            //Thread.sleep(100); //todo, should this delay be here?
 
 
             //Send messages that have not yet been acked
