@@ -35,7 +35,7 @@ public class StubbornLinkListener extends Thread {
     }
 
     public void receive() throws IOException {
-        byte[] buffer = new byte[256];
+        byte[] buffer = new byte[256]; //todo - 6400
         DatagramPacket packet = new DatagramPacket(buffer,buffer.length);
         while(true){
             synchronized (killLock){

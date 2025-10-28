@@ -14,7 +14,7 @@ public class CallbackLogger implements OnDeliverCallBack {
         try {
             outputWriter.write("d "+m.sender+" "+m.payload +"\n");
         } catch (IOException ignored) {
-
+            System.out.println("PROBLEM WITH LOGGING :(");
         }
     }
 

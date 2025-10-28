@@ -34,11 +34,8 @@ public class StubbornLinkSender extends Thread{
             if(!toSend.containsKey(message.receiver)){
                 toSend.put(message.receiver,new TargetQueue());
             }
-
             toSend.get(message.receiver).enqueueMessage(message);
         }
-
-
     }
 
 
