@@ -10,13 +10,22 @@ public class CallbackLogger implements OnDeliverCallBack {
 
     @Override
     public void onDeliver(PLMessageRegular m) {
-        System.out.println("d "+m.sender+" "+m.payload);
+        String payloadString = payloadToString(m.getPayload());
+
+        System.out.println("d "+m.getMetadata().getSenderId()+" "+payloadString);
         try {
-            outputWriter.write("d "+m.sender+" "+m.payload +"\n");
+            outputWriter.write("d "+m.getMetadata().getSenderId()+" "+payloadString +"\n");
         } catch (IOException ignored) {
             System.out.println("PROBLEM WITH LOGGING :(");
         }
     }
+
+    private String payloadToString(Object payload){
+        int payloadInt = (Integer) payload;
+        return ""+payloadInt;
+    }
+
+
 
     @Override
     public void onShouldAck(PLMessageRegular m) {

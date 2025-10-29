@@ -1,5 +1,6 @@
 package cs451.PerfectLinks;
 
+import cs451.GlobalCfg;
 import cs451.Host;
 import cs451.OnDeliverCallBack;
 
@@ -34,8 +35,8 @@ public class StubbornLinkListener extends Thread {
         }
     }
 
-    public void receive() throws IOException {
-        byte[] buffer = new byte[256]; //todo - 6400
+    public void receive() throws IOException, ClassNotFoundException {
+        byte[] buffer = new byte[6400];
         DatagramPacket packet = new DatagramPacket(buffer,buffer.length);
         while(true){
             synchronized (killLock){
@@ -45,12 +46,14 @@ public class StubbornLinkListener extends Thread {
             }
             socket.receive(packet);
 
-            String packetString = new String(packet.getData(),0,packet.getLength());
 
-            PLMessage message = PLMessage.fromString(packetString);
+            PLMessage message = PLMessage.fromBytes(packet.getData());
 
 
             if(message.isAck()){
+                if(GlobalCfg.PL_ACK_DEBUG) {
+                    System.out.println("Listener Heard ack for: " + message.getMetadata().getMessageNo());
+                }
                 ackCallBack.onAcknowledgement((PLAckMessage) message);
                 continue;
             }
@@ -73,7 +76,7 @@ public class StubbornLinkListener extends Thread {
     public void run(){
         try {
             receive();
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }

@@ -1,5 +1,6 @@
 package cs451.PerfectLinks;
 
+import cs451.GlobalCfg;
 import cs451.Host;
 import cs451.Phonebook;
 
@@ -10,7 +11,7 @@ import java.util.*;
 public class StubbornLinkSender extends Thread{
 
     final List<PLAckMessage> toAck;
-    final List<PLAckMessage> messagedThatHaveBeenAckedByOther;
+    final List<PLAckMessage> messagesThatHaveBeenAckedByOther;
     final HashMap<Integer,TargetQueue> toSend;
     final DatagramSocket socket;
     int id;
@@ -22,20 +23,39 @@ public class StubbornLinkSender extends Thread{
     public StubbornLinkSender(int selfId) throws SocketException {
         socket = new DatagramSocket();
         toAck = Collections.synchronizedList(new ArrayList<>());
-        messagedThatHaveBeenAckedByOther = Collections.synchronizedList(new ArrayList<>());
+        messagesThatHaveBeenAckedByOther = Collections.synchronizedList(new ArrayList<>());
         this.toSend = new HashMap<>();
         this.id = selfId;
         this.killed = false;
         this.killLock = new Object();
     }
 
-    public void sendMessage(PLMessageRegular message) throws InterruptedException {
-        synchronized (toSend){
-            if(!toSend.containsKey(message.receiver)){
-                toSend.put(message.receiver,new TargetQueue());
+    public int getNextMessageNoForTarget(int target){
+        synchronized (toSend) {
+            if (!toSend.containsKey(target)) {
+                toSend.put(target, new TargetQueue());
             }
-            toSend.get(message.receiver).enqueueMessage(message);
+            TargetQueue q = toSend.get(target);
+            return q.getNextMessageNo();
         }
+
+    }
+
+    public void sendMessage(PLMessageRegular message) throws InterruptedException {
+        Object canSendLock;
+
+        synchronized (toSend){
+            if(!toSend.containsKey(message.getMetadata().getReceiverId())){
+                toSend.put(message.getMetadata().getReceiverId(),new TargetQueue());
+            }
+            TargetQueue tq = toSend.get(message.getMetadata().getReceiverId());
+            canSendLock = tq.getQueueLock();
+        }
+
+        synchronized (canSendLock){
+            toSend.get(message.getMetadata().getReceiverId()).enqueueMessage(message);
+        }
+
     }
 
 
@@ -46,8 +66,11 @@ public class StubbornLinkSender extends Thread{
     }
 
     public void receiveAck(PLAckMessage ackedMessage){
-        synchronized (messagedThatHaveBeenAckedByOther){
-            messagedThatHaveBeenAckedByOther.add(ackedMessage);
+        synchronized (messagesThatHaveBeenAckedByOther) {
+            if (GlobalCfg.PL_ACK_DEBUG){
+                System.out.println("added ack to list of acks");
+            }
+            messagesThatHaveBeenAckedByOther.add(ackedMessage);
         }
     }
 
@@ -66,6 +89,8 @@ public class StubbornLinkSender extends Thread{
             }
 
 
+            //Thread.sleep(100);
+
 
             //Send messages that have not yet been acked
             synchronized (toSend) {
@@ -76,8 +101,7 @@ public class StubbornLinkSender extends Thread{
                         continue;
                     }
                     PLMessageRegular m = mOpt.get();
-                    int messageNo = t.getMessageNo();
-                    m.setMessageNo(messageNo);
+
                     DatagramPacket p = makePacketForReg(m);
                     synchronized (socket) {
                         socket.send(p);
@@ -90,6 +114,9 @@ public class StubbornLinkSender extends Thread{
             //Send acks for messages received
             synchronized (toAck){
                 for (PLAckMessage m : toAck){
+                    if(GlobalCfg.PL_ACK_DEBUG) {
+                        System.out.println("Acking: " + m.getMetadata().getMessageNo());
+                    }
                     DatagramPacket p = makePacketForAck(m);
                     synchronized (socket){
                         socket.send(p);
@@ -99,13 +126,13 @@ public class StubbornLinkSender extends Thread{
             }
 
 
-            //Remove acked messages from "sending" list
-            synchronized (messagedThatHaveBeenAckedByOther){
+            //Handle received acks
+            synchronized (messagesThatHaveBeenAckedByOther){
                 synchronized (toSend){
-                    for(PLAckMessage m: messagedThatHaveBeenAckedByOther){
-                        int target = m.hostThatAcks;
+                    for(PLAckMessage m: messagesThatHaveBeenAckedByOther){
+                        int target = m.getMetadataForAckedMessage().getReceiverId();
                         if(!toSend.containsKey(target)){
-                            System.out.println("ERROR - ACK FROM UNKOWN HOST");
+                            System.out.println("ERROR - ACK FROM UNKNOWN HOST");
                             return;
                         }
                         toSend.get(target).tryAck(m);
@@ -117,18 +144,20 @@ public class StubbornLinkSender extends Thread{
 
         }
     }
-    private DatagramPacket makePacketForAck(PLAckMessage ackMessage) throws UnknownHostException {
-        Host target = Phonebook.hostFromId(ackMessage.hostToAck);
-        String toSend = ackMessage.toString();
-        byte[] buffer = toSend.getBytes();
+
+
+
+
+    private DatagramPacket makePacketForAck(PLAckMessage ackMessage) throws IOException {
+        Host target = Phonebook.hostFromId(ackMessage.getMetadataForAckedMessage().getSenderId());
+        byte[] buffer = ackMessage.toBytes();
         InetAddress address = InetAddress.getByName(target.getIp());
         return new DatagramPacket(buffer, 0, buffer.length, address, target.getPort());
     }
 
-    private DatagramPacket makePacketForReg(PLMessageRegular message) throws UnknownHostException {
-        Host target = Phonebook.hostFromId(message.receiver);
-        String toSend = message.toString();
-        byte[] buffer = toSend.getBytes();
+    private DatagramPacket makePacketForReg(PLMessageRegular message) throws IOException {
+        Host target = Phonebook.hostFromId(message.getMetadata().getReceiverId());
+        byte[] buffer = message.toBytes();
         InetAddress address = InetAddress.getByName(target.getIp());
         return new DatagramPacket(buffer, 0, buffer.length, address, target.getPort());
     }

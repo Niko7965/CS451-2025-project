@@ -1,55 +1,54 @@
 package cs451.PerfectLinks;
 
 
+import java.io.*;
+
 public class PLMessageRegular extends PLMessage {
-    public int sender;
-    public String payload;
-    public int receiver;
-    private int messageNo;
+    private final PLMessageMetadata metadata;
+    private final Object payload;
 
 
-    public PLMessageRegular(int sender, String payload, int receiver){
-        this.sender = sender;
+    public PLMessageRegular(int sender, int receiver, int messageNo, Object payload){
+        this.metadata = new PLMessageMetadata(false,messageNo,sender,receiver);
         this.payload = payload;
-        this.receiver = receiver;
     }
 
-    public PLMessageRegular(String[] contents){
-        this.messageNo = Integer.parseInt(contents[1]);
-        this.sender = Integer.parseInt(contents[2]);
-        this.receiver = Integer.parseInt(contents[3]);
-        this.payload = contents[4];
+    public PLMessageRegular(PLMessageMetadata metadata,Object payload){
+        this.metadata = metadata;
+        this.payload = payload;
     }
 
-    public void setMessageNo(int messageNo){
-        this.messageNo = messageNo;
+    public Object getPayload(){
+        return payload;
     }
 
-    public int getMessageNo(){
-        return this.messageNo;
+    public PLMessageMetadata getMetadata(){
+        return this.metadata;
     }
-
 
     /*
     Sends an ack that the receiver of this message, has recieved this message
     From the sender of this message
      */
     public PLAckMessage simpleAck(){
-        return new PLAckMessage(this,this.sender,this.receiver);
+        return new PLAckMessage(this);
     }
 
-    public boolean equals(PLMessageRegular other){
-        return this.messageNo == other.messageNo && this.sender == other.sender && this.receiver == other.receiver && other.payload.equals(this.payload);
+    //https://www.baeldung.com/object-to-byte-array
+    public static byte[] payloadToBytes(Object payload) throws IOException {
+        ByteArrayOutputStream byteOutStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutStream = new ObjectOutputStream(byteOutStream);
+        objectOutStream.writeObject(payload);
+        objectOutStream.flush();
+        return byteOutStream.toByteArray();
     }
 
-    public String toString(){
-        /*0*/   String s = "SEND";
-        /*1*/   s += " "+ this.getMessageNo();
-        /*2*/   s += " "+this.sender;
-        /*3*/   s += " "+this.receiver;
-        /*4*/   s += " "+this.payload;
-        return s;
+    public static Object payloadFromBytes(byte[] bytes) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream byteArrayInStream = new ByteArrayInputStream(bytes);
+        ObjectInputStream objectInStream = new ObjectInputStream(byteArrayInStream);
+        return objectInStream.readObject();
     }
+
 
 
     @Override

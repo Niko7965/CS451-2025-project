@@ -1,30 +1,31 @@
 package cs451.PerfectLinks;
 
-import java.util.Arrays;
 
 public class PLAckMessage extends PLMessage {
-    public PLMessageRegular message;
-    public int hostToAck;
-    public int hostThatAcks;
+    private final PLMessageMetadata metadataForAckedMessage;
 
-    public PLAckMessage(PLMessageRegular m, int hostToAck, int hostThatAcks){
-        this.message = m;
-        this.hostToAck = hostToAck;
-        this.hostThatAcks = hostThatAcks;
+
+    public PLAckMessage(PLMessageMetadata metadata){
+        this.metadataForAckedMessage = metadata;
+    }
+
+    public PLAckMessage(PLMessageRegular m){
+        this.metadataForAckedMessage = m.getMetadata().ackMetaData();
+    }
+
+    public PLMessageMetadata getMetadataForAckedMessage(){
+        return this.metadataForAckedMessage;
+    }
+
+
+    @Override
+    public PLMessageMetadata getMetadata() {
+        return metadataForAckedMessage;
     }
 
     @Override
-    public String toString(){
-        return "ACK "+this.hostThatAcks + " "+this.hostToAck + " " + message.toString();
-    }
-
-    public PLAckMessage(String[] contents){
-        this.hostThatAcks = Integer.parseInt(contents[1]);
-        this.hostToAck = Integer.parseInt(contents[2]);
-
-        String[] regMessageContents = Arrays.copyOfRange(contents,3,contents.length);
-        this.message = (PLMessageRegular) PLMessage.fromStringArr(regMessageContents);
-
+    public Object getPayload() {
+        return null;
     }
 
     @Override

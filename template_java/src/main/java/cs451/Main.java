@@ -1,10 +1,8 @@
 package cs451;
 
-import cs451.PerfectLinks.PLMessageRegular;
 import cs451.PerfectLinks.PerfectLink;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 
 public class Main {
@@ -12,7 +10,6 @@ public class Main {
     static PerfectLink pl;
 
     private static void handleSignal() {
-        //todo immediately stop network packet processing
         System.out.println("Immediately stopping network packet processing.");
         pl.kill();
         try {
@@ -86,8 +83,7 @@ public static void main(String[] args) throws InterruptedException, IOException 
         Host receiverHost = hostFromId(taskParser.getReceiverId(),parser);
 
         for(int i = 1; i <= taskParser.getNoOfMessages();i++){
-            PLMessageRegular m = new PLMessageRegular(myId,""+i, receiverHost.getId());
-            perfectLink.sendMessage(m);
+            perfectLink.sendIntMessage(i,myId, receiverHost.getId());
         }
     }
 
