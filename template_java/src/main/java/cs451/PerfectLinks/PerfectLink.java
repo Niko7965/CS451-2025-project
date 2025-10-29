@@ -61,7 +61,6 @@ public class PerfectLink implements OnDeliverCallBack, AckCallBack {
 
     @Override
     public void onAcknowledgement(PLAckMessage m) {
-        System.out.println("PL got ack");
         stubbornLinkSender.receiveAck(m);
     }
 }

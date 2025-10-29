@@ -66,9 +66,10 @@ public class StubbornLinkSender extends Thread{
     }
 
     public void receiveAck(PLAckMessage ackedMessage){
-        System.out.println("Waiting for sync");
-        synchronized (messagesThatHaveBeenAckedByOther){
-            System.out.println("added ack to list of acks");
+        synchronized (messagesThatHaveBeenAckedByOther) {
+            if (GlobalCfg.PL_ACK_DEBUG){
+                System.out.println("added ack to list of acks");
+            }
             messagesThatHaveBeenAckedByOther.add(ackedMessage);
         }
     }

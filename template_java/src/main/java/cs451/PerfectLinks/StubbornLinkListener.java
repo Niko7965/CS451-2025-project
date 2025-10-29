@@ -1,5 +1,6 @@
 package cs451.PerfectLinks;
 
+import cs451.GlobalCfg;
 import cs451.Host;
 import cs451.OnDeliverCallBack;
 
@@ -50,7 +51,9 @@ public class StubbornLinkListener extends Thread {
 
 
             if(message.isAck()){
-                System.out.println("Heard ack for: "+message.getMetadata().getMessageNo());
+                if(GlobalCfg.PL_ACK_DEBUG) {
+                    System.out.println("Listener Heard ack for: " + message.getMetadata().getMessageNo());
+                }
                 ackCallBack.onAcknowledgement((PLAckMessage) message);
                 continue;
             }
