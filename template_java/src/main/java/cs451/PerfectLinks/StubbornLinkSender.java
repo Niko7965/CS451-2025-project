@@ -10,7 +10,7 @@ import java.util.*;
 public class StubbornLinkSender extends Thread{
 
     final List<PLAckMessage> toAck;
-    final List<PLAckMessage> messagedThatHaveBeenAckedByOther;
+    final List<PLAckMessage> messagesThatHaveBeenAckedByOther;
     final HashMap<Integer,TargetQueue> toSend;
     final DatagramSocket socket;
     int id;
@@ -22,7 +22,7 @@ public class StubbornLinkSender extends Thread{
     public StubbornLinkSender(int selfId) throws SocketException {
         socket = new DatagramSocket();
         toAck = Collections.synchronizedList(new ArrayList<>());
-        messagedThatHaveBeenAckedByOther = Collections.synchronizedList(new ArrayList<>());
+        messagesThatHaveBeenAckedByOther = Collections.synchronizedList(new ArrayList<>());
         this.toSend = new HashMap<>();
         this.id = selfId;
         this.killed = false;
@@ -57,8 +57,9 @@ public class StubbornLinkSender extends Thread{
     }
 
     public void receiveAck(PLAckMessage ackedMessage){
-        synchronized (messagedThatHaveBeenAckedByOther){
-            messagedThatHaveBeenAckedByOther.add(ackedMessage);
+        synchronized (messagesThatHaveBeenAckedByOther){
+            System.out.println("added ack to list of acks");
+            messagesThatHaveBeenAckedByOther.add(ackedMessage);
         }
     }
 
@@ -111,9 +112,9 @@ public class StubbornLinkSender extends Thread{
 
 
             //Handle received acks
-            synchronized (messagedThatHaveBeenAckedByOther){
+            synchronized (messagesThatHaveBeenAckedByOther){
                 synchronized (toSend){
-                    for(PLAckMessage m: messagedThatHaveBeenAckedByOther){
+                    for(PLAckMessage m: messagesThatHaveBeenAckedByOther){
                         int target = m.getMetadataForAckedMessage().getReceiverId();
                         if(!toSend.containsKey(target)){
                             System.out.println("ERROR - ACK FROM UNKNOWN HOST");
