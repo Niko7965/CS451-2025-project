@@ -15,8 +15,8 @@ public class DeliveredMessageTracker {
     than previous message (or is first message)
      */
     public boolean shouldDeliver(PLMessageRegular m){
-        int sender = m.sender;
-        int messageNo = m.getMessageNo();
+        int sender = m.getMetadata().getSenderId();
+        int messageNo = m.getMetadata().getMessageNo();
 
         if(!messageNoForSender.containsKey(sender)){
             messageNoForSender.put(sender,messageNo);
@@ -32,8 +32,8 @@ public class DeliveredMessageTracker {
     }
 
     public boolean hasReceived(PLMessageRegular m){
-        int sender = m.sender;
-        int messageNo = m.getMessageNo();
+        int sender = m.getMetadata().getSenderId();
+        int messageNo = m.getMetadata().getMessageNo();
 
         if(!messageNoForSender.containsKey(sender)){
             return false;

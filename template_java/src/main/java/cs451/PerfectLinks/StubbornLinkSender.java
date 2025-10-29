@@ -29,12 +29,23 @@ public class StubbornLinkSender extends Thread{
         this.killLock = new Object();
     }
 
+    public int getNextMessageNoForTarget(int target){
+        synchronized (toSend) {
+            if (!toSend.containsKey(target)) {
+                toSend.put(target, new TargetQueue());
+            }
+            TargetQueue q = toSend.get(target);
+            return q.getNextMessageNo();
+        }
+
+    }
+
     public void sendMessage(PLMessageRegular message) throws InterruptedException {
         synchronized (toSend){
-            if(!toSend.containsKey(message.receiver)){
-                toSend.put(message.receiver,new TargetQueue());
+            if(!toSend.containsKey(message.getMetadata().getReceiverId())){
+                toSend.put(message.getMetadata().getReceiverId(),new TargetQueue());
             }
-            toSend.get(message.receiver).enqueueMessage(message);
+            toSend.get(message.getMetadata().getReceiverId()).enqueueMessage(message);
         }
     }
 
@@ -76,8 +87,7 @@ public class StubbornLinkSender extends Thread{
                         continue;
                     }
                     PLMessageRegular m = mOpt.get();
-                    int messageNo = t.getMessageNo();
-                    m.setMessageNo(messageNo);
+
                     DatagramPacket p = makePacketForReg(m);
                     synchronized (socket) {
                         socket.send(p);
@@ -103,9 +113,9 @@ public class StubbornLinkSender extends Thread{
             synchronized (messagedThatHaveBeenAckedByOther){
                 synchronized (toSend){
                     for(PLAckMessage m: messagedThatHaveBeenAckedByOther){
-                        int target = m.hostThatAcks;
+                        int target = m.getMetadataForAckedMessage().getReceiverId();
                         if(!toSend.containsKey(target)){
-                            System.out.println("ERROR - ACK FROM UNKOWN HOST");
+                            System.out.println("ERROR - ACK FROM UNKNOWN HOST");
                             return;
                         }
                         toSend.get(target).tryAck(m);
@@ -117,18 +127,20 @@ public class StubbornLinkSender extends Thread{
 
         }
     }
-    private DatagramPacket makePacketForAck(PLAckMessage ackMessage) throws UnknownHostException {
-        Host target = Phonebook.hostFromId(ackMessage.hostToAck);
-        String toSend = ackMessage.toString();
-        byte[] buffer = toSend.getBytes();
+
+
+
+
+    private DatagramPacket makePacketForAck(PLAckMessage ackMessage) throws IOException {
+        Host target = Phonebook.hostFromId(ackMessage.getMetadataForAckedMessage().getSenderId());
+        byte[] buffer = ackMessage.toBytes();
         InetAddress address = InetAddress.getByName(target.getIp());
         return new DatagramPacket(buffer, 0, buffer.length, address, target.getPort());
     }
 
-    private DatagramPacket makePacketForReg(PLMessageRegular message) throws UnknownHostException {
-        Host target = Phonebook.hostFromId(message.receiver);
-        String toSend = message.toString();
-        byte[] buffer = toSend.getBytes();
+    private DatagramPacket makePacketForReg(PLMessageRegular message) throws IOException {
+        Host target = Phonebook.hostFromId(message.getMetadata().getReceiverId());
+        byte[] buffer = message.toBytes();
         InetAddress address = InetAddress.getByName(target.getIp());
         return new DatagramPacket(buffer, 0, buffer.length, address, target.getPort());
     }

@@ -5,7 +5,6 @@ import cs451.*;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
 
 //Each perfect link spawns two threads, one for the listener and sender of stubborn links,
@@ -16,7 +15,6 @@ public class PerfectLink implements OnDeliverCallBack, AckCallBack {
     OnDeliverCallBack callBack;
     StubbornLinkListener stubbornLinkListener;
     StubbornLinkSender stubbornLinkSender;
-    ArrayList<PLMessageRegular> delivered; //todo replace with hashset
     OutputWriter outputWriter;
 
     boolean paused;
@@ -27,15 +25,20 @@ public class PerfectLink implements OnDeliverCallBack, AckCallBack {
         this.callBack = callBack;
         this.stubbornLinkSender = new StubbornLinkSender(selfHost.getId());
         this.stubbornLinkSender.start();
-        this.delivered = new ArrayList<>();
         this.outputWriter = w;
         paused = false;
     }
 
-    public void sendMessage(PLMessageRegular m) throws IOException, InterruptedException {
-        System.out.println("b "+m.payload);
-        outputWriter.write("b "+m.payload +"\n");
-        stubbornLinkSender.sendMessage(m);
+    public void sendIntMessage(int payload, int sender, int receiver) throws IOException, InterruptedException {
+        sendMessage(payload,sender,receiver);
+        System.out.println("b "+payload);
+        outputWriter.write("b "+payload +"\n");
+    }
+
+    public void sendMessage(Object payload, int sender, int receiver) throws  InterruptedException {
+        int messageNo = stubbornLinkSender.getNextMessageNoForTarget(receiver);
+        PLMessageRegular message = new PLMessageRegular(sender,receiver,messageNo,payload);
+        stubbornLinkSender.sendMessage(message);
     }
 
     public void kill(){

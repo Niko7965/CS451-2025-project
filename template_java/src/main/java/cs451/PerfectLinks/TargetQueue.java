@@ -12,31 +12,34 @@ public class TargetQueue {
     int messageNo;
 
     //Concurrency vars
-    final Object pushLock;
+    final Object queueLock;
     boolean canPush;
     private final int MAX_QUEUE_SIZE = 100;
 
     public TargetQueue(){
         this.q = new LinkedBlockingQueue<>();
         this.messageNo = Integer.MIN_VALUE;
-        this.pushLock = new Object();
+        this.queueLock = new Object();
         this.canPush = true;
     }
 
     public Optional<PLMessageRegular> getCurrent(){
-        if(!q.isEmpty()){
-            return Optional.of(q.peek());
+        synchronized (queueLock) {
+            if (!q.isEmpty()) {
+                return Optional.of(q.peek());
+            }
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     public void enqueueMessage(PLMessageRegular m) throws InterruptedException {
-        synchronized (pushLock){
+        synchronized (queueLock){
             if(!canPush){
                 //Wait releases the above lock!
-                pushLock.wait();
+                queueLock.wait();
             }
             q.add(m);
+            messageNo+=1;
 
             if(q.size() >= MAX_QUEUE_SIZE){
                 canPush = false;
@@ -45,25 +48,36 @@ public class TargetQueue {
 
     }
 
-    public int getMessageNo(){
-        return messageNo;
+
+    public int getNextMessageNo(){
+        synchronized (queueLock) {
+            return messageNo;
+        }
     }
 
     public void iterate(){
-        synchronized (pushLock){
+        synchronized (queueLock){
             q.poll();
-            messageNo++;
             if(q.size() < MAX_QUEUE_SIZE){
                 canPush = true;
-                pushLock.notifyAll();
+                queueLock.notifyAll();
             }
         }
 
     }
 
     public void tryAck(PLAckMessage am){
-        if(am.message.getMessageNo() == messageNo){
-            iterate();
+        synchronized (queueLock) {
+            //todo change
+            Optional<PLMessageRegular> current = getCurrent();
+            if(current.isEmpty()){
+                return;
+            }
+            int currentMessageNo = current.get().getMetadata().getMessageNo();
+
+            if (am.getMetadataForAckedMessage().getMessageNo() == currentMessageNo) {
+                iterate();
+            }
         }
     }
 }
