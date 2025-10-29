@@ -79,6 +79,8 @@ public class StubbornLinkSender extends Thread{
             }
 
 
+            Thread.sleep(100);
+
 
             //Send messages that have not yet been acked
             synchronized (toSend) {
