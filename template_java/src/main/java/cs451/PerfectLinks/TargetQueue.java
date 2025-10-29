@@ -66,6 +66,10 @@ public class TargetQueue {
 
     }
 
+    public Object getQueueLock(){
+        return queueLock;
+    }
+
     public void tryAck(PLAckMessage am){
         synchronized (queueLock) {
             //todo change

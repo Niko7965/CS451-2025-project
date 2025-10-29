@@ -41,12 +41,20 @@ public class StubbornLinkSender extends Thread{
     }
 
     public void sendMessage(PLMessageRegular message) throws InterruptedException {
+        Object canSendLock;
+
         synchronized (toSend){
             if(!toSend.containsKey(message.getMetadata().getReceiverId())){
                 toSend.put(message.getMetadata().getReceiverId(),new TargetQueue());
             }
+            TargetQueue tq = toSend.get(message.getMetadata().getReceiverId());
+            canSendLock = tq.getQueueLock();
+        }
+
+        synchronized (canSendLock){
             toSend.get(message.getMetadata().getReceiverId()).enqueueMessage(message);
         }
+
     }
 
 
