@@ -71,11 +71,16 @@ public class TargetQueue {
             //todo change
             Optional<PLMessageRegular> current = getCurrent();
             if(current.isEmpty()){
+                System.out.println("Acked, but queue was empty");
                 return;
             }
             int currentMessageNo = current.get().getMetadata().getMessageNo();
+            int incomingMessageNo = am.getMetadataForAckedMessage().getMessageNo();
 
-            if (am.getMetadataForAckedMessage().getMessageNo() == currentMessageNo) {
+            System.out.println(incomingMessageNo +" " + currentMessageNo);
+
+            if (incomingMessageNo == currentMessageNo) {
+                System.out.println("iterated!");
                 iterate();
             }
         }

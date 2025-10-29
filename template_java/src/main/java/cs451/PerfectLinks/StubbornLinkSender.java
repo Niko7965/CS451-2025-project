@@ -110,7 +110,7 @@ public class StubbornLinkSender extends Thread{
             }
 
 
-            //Remove acked messages from "sending" list
+            //Handle received acks
             synchronized (messagedThatHaveBeenAckedByOther){
                 synchronized (toSend){
                     for(PLAckMessage m: messagedThatHaveBeenAckedByOther){
@@ -119,6 +119,7 @@ public class StubbornLinkSender extends Thread{
                             System.out.println("ERROR - ACK FROM UNKNOWN HOST");
                             return;
                         }
+                        System.out.println("Trying to use ack");
                         toSend.get(target).tryAck(m);
                     }
                 }
