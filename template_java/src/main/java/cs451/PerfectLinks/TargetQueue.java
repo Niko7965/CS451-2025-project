@@ -1,5 +1,7 @@
 package cs451.PerfectLinks;
 
+import cs451.GlobalCfg;
+
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -75,16 +77,22 @@ public class TargetQueue {
             //todo change
             Optional<PLMessageRegular> current = getCurrent();
             if(current.isEmpty()){
-                System.out.println("Acked, but queue was empty");
+                if(GlobalCfg.PL_ACK_DEBUG) {
+                    System.out.println("Acked, but queue was empty");
+                }
                 return;
             }
             int currentMessageNo = current.get().getMetadata().getMessageNo();
             int incomingMessageNo = am.getMetadataForAckedMessage().getMessageNo();
 
-            System.out.println(incomingMessageNo +" " + currentMessageNo);
+            if(GlobalCfg.PL_ACK_DEBUG) {
+                System.out.println(incomingMessageNo + " " + currentMessageNo);
+            }
 
             if (incomingMessageNo == currentMessageNo) {
-                System.out.println("iterated!");
+                if(GlobalCfg.PL_ACK_DEBUG) {
+                    System.out.println("iterated!");
+                }
                 iterate();
             }
         }

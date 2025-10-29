@@ -1,5 +1,6 @@
 package cs451.PerfectLinks;
 
+import cs451.GlobalCfg;
 import cs451.Host;
 import cs451.Phonebook;
 
@@ -112,7 +113,9 @@ public class StubbornLinkSender extends Thread{
             //Send acks for messages received
             synchronized (toAck){
                 for (PLAckMessage m : toAck){
-                    System.out.println("Acking: "+m.getMetadata().getMessageNo());
+                    if(GlobalCfg.PL_ACK_DEBUG) {
+                        System.out.println("Acking: " + m.getMetadata().getMessageNo());
+                    }
                     DatagramPacket p = makePacketForAck(m);
                     synchronized (socket){
                         socket.send(p);
@@ -131,7 +134,6 @@ public class StubbornLinkSender extends Thread{
                             System.out.println("ERROR - ACK FROM UNKNOWN HOST");
                             return;
                         }
-                        System.out.println("Trying to use ack");
                         toSend.get(target).tryAck(m);
                     }
                 }
