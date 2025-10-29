@@ -50,6 +50,7 @@ public class StubbornLinkListener extends Thread {
 
 
             if(message.isAck()){
+                System.out.println("Heard ack for: "+message.getMetadata().getMessageNo());
                 ackCallBack.onAcknowledgement((PLAckMessage) message);
                 continue;
             }

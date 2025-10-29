@@ -100,6 +100,7 @@ public class StubbornLinkSender extends Thread{
             //Send acks for messages received
             synchronized (toAck){
                 for (PLAckMessage m : toAck){
+                    System.out.println("Acking: "+m.getMetadata().getMessageNo());
                     DatagramPacket p = makePacketForAck(m);
                     synchronized (socket){
                         socket.send(p);
