@@ -21,6 +21,7 @@ var smallest messageNo contains the value of the current smallest messageNo
 
 public class TargetQueue {
     int lowestFreeMessageNo;
+    int nextMessageNoToEnter;
 
     Queue<PLMessageRegular> q;
     private int smallestNonAckedMessageNo;
@@ -35,6 +36,7 @@ public class TargetQueue {
         this.queueLock = new Object();
         this.smallestNonAckedMessageNo = Integer.MIN_VALUE;
         this.lowestFreeMessageNo = Integer.MIN_VALUE;
+        this.nextMessageNoToEnter = Integer.MIN_VALUE;
     }
 
     public List<PLMessageRegular> getCurrentMessages(){
@@ -57,11 +59,13 @@ public class TargetQueue {
             [100,200]
             And skip values in between
              */
-            if(m.getMetadata().getMessageNo() != smallestNonAckedMessageNo + MAX_QUEUE_SIZE){
+            int messageNo = m.getMetadata().getMessageNo();
+            if(messageNo != nextMessageNoToEnter || messageNo >= smallestNonAckedMessageNo + MAX_QUEUE_SIZE){
                 //Wait releases the above lock!
                 queueLock.wait();
             }
 
+            nextMessageNoToEnter += 1;
             q.add(m);
         }
 
@@ -109,6 +113,7 @@ public class TargetQueue {
                 if (match.get().getMetadata().getMessageNo() == smallestNonAckedMessageNo) {
                     updateSmallestMessageNoInList();
                 }
+                queueLock.notifyAll();
             }
         }
     }
