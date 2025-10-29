@@ -96,15 +96,12 @@ public class StubbornLinkSender extends Thread{
             synchronized (toSend) {
 
                 for(TargetQueue t : toSend.values()){
-                    Optional<PLMessageRegular> mOpt = t.getCurrent();
-                    if(mOpt.isEmpty()){
-                        continue;
-                    }
-                    PLMessageRegular m = mOpt.get();
-
-                    DatagramPacket p = makePacketForReg(m);
-                    synchronized (socket) {
-                        socket.send(p);
+                    List<PLMessageRegular> toSendToTarget = t.getCurrentMessages();
+                    for(PLMessageRegular m : toSendToTarget){
+                        DatagramPacket p = makePacketForReg(m);
+                        synchronized (socket) {
+                            socket.send(p);
+                        }
                     }
                 }
 
@@ -135,7 +132,7 @@ public class StubbornLinkSender extends Thread{
                             System.out.println("ERROR - ACK FROM UNKNOWN HOST");
                             return;
                         }
-                        toSend.get(target).tryAck(m);
+                        toSend.get(target).ackAnyInQ(m);
                     }
                 }
             }
