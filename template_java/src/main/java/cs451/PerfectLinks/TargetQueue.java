@@ -11,7 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class TargetQueue {
     Queue<PLMessageRegular> q;
-    int messageNo;
+    int nextMessageNo;
 
     //Concurrency vars
     final Object queueLock;
@@ -20,7 +20,7 @@ public class TargetQueue {
 
     public TargetQueue(){
         this.q = new LinkedBlockingQueue<>();
-        this.messageNo = Integer.MIN_VALUE;
+        this.nextMessageNo = Integer.MIN_VALUE;
         this.queueLock = new Object();
         this.canPush = true;
     }
@@ -41,7 +41,7 @@ public class TargetQueue {
                 queueLock.wait();
             }
             q.add(m);
-            messageNo+=1;
+            nextMessageNo +=1;
 
             if(q.size() >= MAX_QUEUE_SIZE){
                 canPush = false;
@@ -53,7 +53,7 @@ public class TargetQueue {
 
     public int getNextMessageNo(){
         synchronized (queueLock) {
-            return messageNo;
+            return nextMessageNo;
         }
     }
 
