@@ -10,16 +10,16 @@ import java.net.UnknownHostException;
 //Each perfect link spawns two threads, one for the listener and sender of stubborn links,
 //as each needs to loop forever
 //Therefore, we should strive not to create multiple perfect links
-public class PerfectLink implements OnDeliverCallBack, AckCallBack {
+public class PerfectLink implements PLCallback, AckCallBack {
 
-    OnDeliverCallBack callBack;
+    PLCallback callBack;
     StubbornLinkListener stubbornLinkListener;
     StubbornLinkSender stubbornLinkSender;
     OutputWriter outputWriter;
 
     boolean paused;
 
-    public PerfectLink(Host selfHost,OnDeliverCallBack callBack, OutputWriter w) throws SocketException, UnknownHostException {
+    public PerfectLink(Host selfHost, PLCallback callBack, OutputWriter w) throws SocketException, UnknownHostException {
         this.stubbornLinkListener = new StubbornLinkListener(selfHost,this,this);
         this.stubbornLinkListener.start();
         this.callBack = callBack;
@@ -35,6 +35,8 @@ public class PerfectLink implements OnDeliverCallBack, AckCallBack {
         outputWriter.write("b "+payload +"\n");
     }
 
+
+
     public void sendMessage(Object payload, int sender, int receiver) throws  InterruptedException {
         int messageNo = stubbornLinkSender.getNextMessageNoForTarget(receiver);
         PLMessageRegular message = new PLMessageRegular(sender,receiver,messageNo,payload);
@@ -44,6 +46,10 @@ public class PerfectLink implements OnDeliverCallBack, AckCallBack {
     public void kill(){
         stubbornLinkSender.kill();
         stubbornLinkListener.kill();
+    }
+
+    public boolean targetIsReadyForAnotherMessage(int target){
+        return stubbornLinkSender.targetIsReadyForMoreMessages(target);
     }
 
     //Is called every time a new unique message is received
@@ -56,7 +62,6 @@ public class PerfectLink implements OnDeliverCallBack, AckCallBack {
     @Override
     public void onShouldAck(PLMessageRegular m) {
         stubbornLinkSender.sendAck(m.simpleAck());
-
     }
 
     @Override

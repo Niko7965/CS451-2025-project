@@ -41,6 +41,19 @@ public class StubbornLinkSender extends Thread{
 
     }
 
+    public boolean targetIsReadyForMoreMessages(int target){
+        Object canSendLock;
+
+        synchronized (toSend){
+            if(!toSend.containsKey(target)){
+                toSend.put(target,new TargetQueue());
+            }
+            TargetQueue tq = toSend.get(target);
+            return tq.canPush;
+        }
+
+    }
+
     public void sendMessage(PLMessageRegular message) throws InterruptedException {
         Object canSendLock;
 

@@ -2,7 +2,6 @@ package cs451.PerfectLinks;
 
 import cs451.GlobalCfg;
 import cs451.Host;
-import cs451.OnDeliverCallBack;
 
 import java.io.IOException;
 import java.net.*;
@@ -10,7 +9,7 @@ import java.net.*;
 public class StubbornLinkListener extends Thread {
 
     DeliveredMessageTracker deliveredMessageTracker;
-    OnDeliverCallBack deliverCallBack;
+    PLCallback deliverCallBack;
     AckCallBack ackCallBack;
     DatagramSocket socket;
     InetAddress address;
@@ -18,7 +17,7 @@ public class StubbornLinkListener extends Thread {
     boolean killed;
     final Object killLock;
 
-    public StubbornLinkListener(Host host, OnDeliverCallBack deliverCallBack, AckCallBack ackCallBack) throws SocketException, UnknownHostException {
+    public StubbornLinkListener(Host host, PLCallback deliverCallBack, AckCallBack ackCallBack) throws SocketException, UnknownHostException {
         deliveredMessageTracker = new DeliveredMessageTracker();
         port = host.getPort();
         socket = new DatagramSocket(port);

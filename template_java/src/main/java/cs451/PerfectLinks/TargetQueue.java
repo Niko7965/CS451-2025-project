@@ -50,6 +50,12 @@ public class TargetQueue {
 
     }
 
+    public boolean canPush(){
+        synchronized (queueLock){
+            return canPush;
+        }
+    }
+
 
     public int getNextMessageNo(){
         synchronized (queueLock) {

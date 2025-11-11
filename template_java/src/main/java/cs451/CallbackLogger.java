@@ -1,10 +1,11 @@
 package cs451;
 
+import cs451.PerfectLinks.PLCallback;
 import cs451.PerfectLinks.PLMessageRegular;
 
 import java.io.IOException;
 
-public class CallbackLogger implements OnDeliverCallBack {
+public class CallbackLogger implements PLCallback {
 
     OutputWriter outputWriter;
 
