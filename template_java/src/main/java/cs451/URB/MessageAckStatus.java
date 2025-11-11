@@ -33,6 +33,6 @@ public class MessageAckStatus {
     }
 
     public boolean isQuorumAcked(int noOfProcesses){
-        return false; //todo
+        return noOfAcks > noOfProcesses / 2;
     }
 }

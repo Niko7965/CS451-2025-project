@@ -5,7 +5,6 @@ import cs451.PerfectLinks.PerfectLink;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.PriorityQueue;
 
 public class ForwardMessages {
 
