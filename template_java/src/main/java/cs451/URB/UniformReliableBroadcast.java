@@ -17,19 +17,21 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
     private final Object messageNoLock;
     private int messageNo;
     private final PerfectLink pl;
-    int noOfTargets;
+    int noOfHosts;
     int selfId;
+    boolean alive;
     URBCallback callBack;
 
-    public UniformReliableBroadcast(Host selfHost, int noOfTargets, OutputWriter outputWriter, URBCallback callBack) throws SocketException, UnknownHostException {
+    public UniformReliableBroadcast(Host selfHost, int noOfHosts, OutputWriter outputWriter, URBCallback callBack) throws SocketException, UnknownHostException {
         this.selfId = selfHost.getId();
-        forwardMessages = new ForwardMessages(noOfTargets,selfId);
-        acknowledgements = new Acknowledgements(noOfTargets);
+        forwardMessages = new ForwardMessages(noOfHosts,selfId);
+        acknowledgements = new Acknowledgements(noOfHosts);
         messageNoLock = new Object();
         messageNo = Integer.MIN_VALUE;
         pl = new PerfectLink(selfHost,this,outputWriter);
-        this.noOfTargets = noOfTargets;
+        this.noOfHosts = noOfHosts;
         this.callBack = callBack;
+        alive = true;
 
     }
 
@@ -45,11 +47,14 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
     public void repeat() throws InterruptedException {
 
-        while(true) {
+        while(alive) {
 
             synchronized (forwardMessages) {
                 //For each target update their pl queues:
-                for (int i = 0; i < noOfTargets; i++) {
+                for (int i = 0; i < noOfHosts; i++) {
+                    if(i == selfId){
+                        continue;
+                    }
                     forwardMessages.updatePlQueueOfTarget(pl, i);
                 }
             }
@@ -77,7 +82,7 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
 
     public void broadcastInt(int m){
-
+        broadcast(m,selfId);
     }
 
     public void broadcast(Object payload, int sender){
@@ -112,8 +117,6 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
             forwardMessages.add(receivedMessage);
         }
 
-
-
     }
 
 
@@ -121,5 +124,10 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
     @Override
     public void onShouldAck(PLMessageRegular m) {
         //Will never call
+    }
+
+    public void kill() {
+        this.pl.kill();
+        this.alive = false;
     }
 }

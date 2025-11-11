@@ -1,17 +1,20 @@
 package cs451;
 
-import cs451.PerfectLinks.PerfectLink;
+
+import cs451.URB.URBCallbackLogger;
+import cs451.URB.URBCfgParser;
+import cs451.URB.UniformReliableBroadcast;
 
 import java.io.IOException;
 
 
 public class Main {
     static OutputWriter outputWriter;
-    static PerfectLink pl;
+    static UniformReliableBroadcast urb;
 
     private static void handleSignal() {
         System.out.println("Immediately stopping network packet processing.");
-        pl.kill();
+        urb.kill();
         try {
             outputWriter.close();
 
@@ -70,22 +73,18 @@ public static void main(String[] args) throws InterruptedException, IOException 
 
     outputWriter = new OutputWriter(parser.output());
 
-
-    PerfectLink perfectLink = new PerfectLink(hostFromId(parser.myId(),parser),new CallbackLogger(outputWriter),outputWriter);
-    pl = perfectLink;
-    PLCFGParser taskParser = new PLCFGParser(parser.config());
+    int totalNoOfHosts = parser.hosts().size();
+    UniformReliableBroadcast urb = new UniformReliableBroadcast(hostFromId(parser.myId(),parser),totalNoOfHosts,outputWriter, new URBCallbackLogger(outputWriter));
+    URBCfgParser taskParser = new URBCfgParser(parser.config());
 
     Phonebook.init(parser.hosts());
-    int myId = parser.myId();
 
+    int noOfMessages = taskParser.getNoOfMessages();
 
-    if(!(myId== taskParser.getReceiverId())){
-        Host receiverHost = hostFromId(taskParser.getReceiverId(),parser);
-
-        for(int i = 1; i <= taskParser.getNoOfMessages();i++){
-            perfectLink.sendIntMessage(i,myId, receiverHost.getId());
-        }
+    for(int i = 1; i <= noOfMessages; i++){
+        urb.broadcastInt(i);
     }
+
 
     // After a process finishes broadcasting,
     // it waits forever for the delivery of messages.

@@ -1,20 +1,18 @@
-package cs451;
+package cs451.URB;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class PLCFGParser {
+public class URBCfgParser {
 
     private final int noOfMessages;
-    private final int receiverId;
 
-    public PLCFGParser(String path) throws FileNotFoundException {
+    public URBCfgParser(String path) throws FileNotFoundException {
         File f = new File(path);
         Scanner sc = new Scanner(f);
 
         noOfMessages = sc.nextInt();
-        receiverId = sc.nextInt();
         sc.close();
     }
 
@@ -22,7 +20,5 @@ public class PLCFGParser {
         return noOfMessages;
     }
 
-    public int getReceiverId(){
-        return receiverId;
-    }
 }
+

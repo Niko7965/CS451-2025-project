@@ -1,11 +1,10 @@
-package cs451;
+package cs451.PerfectLinks;
 
-import cs451.PerfectLinks.PLCallback;
-import cs451.PerfectLinks.PLMessageRegular;
+import cs451.OutputWriter;
 
 import java.io.IOException;
 
-public class CallbackLogger implements PLCallback {
+public class PLCallbackLogger implements PLCallback {
 
     OutputWriter outputWriter;
 
@@ -32,7 +31,7 @@ public class CallbackLogger implements PLCallback {
     public void onShouldAck(PLMessageRegular m) {
     }
 
-    public CallbackLogger(OutputWriter w){
+    public PLCallbackLogger(OutputWriter w){
         this.outputWriter = w;
     }
 }

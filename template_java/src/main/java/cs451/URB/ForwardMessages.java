@@ -32,19 +32,19 @@ public class ForwardMessages {
     int[][] messageNoForBroadcastAndTarget; //[broadcastno][targetno]
     IndexQueue[] messageQueuePerBroadcast;
 
-    public ForwardMessages(int noOfTargets, int selfNo){
+    public ForwardMessages(int noOfHosts, int selfNo){
         this.selfNo = selfNo;
-        this.messageQueuePerBroadcast = new IndexQueue[noOfTargets];
-        for(int i = 0; i < noOfTargets; i ++){
+        this.messageQueuePerBroadcast = new IndexQueue[noOfHosts];
+        for(int i = 0; i < noOfHosts; i ++){
             messageQueuePerBroadcast[i] = new IndexQueue();
         }
 
 
-        this.noOfTargets = noOfTargets;
-        this.messageNoForBroadcastAndTarget = new int[noOfTargets][noOfTargets];
-        for(int i = 0; i < noOfTargets;i++){
-            this.messageNoForBroadcastAndTarget[i] =  new int[noOfTargets];
-            for(int j = 0; j < noOfTargets; j++){
+        this.noOfTargets = noOfHosts;
+        this.messageNoForBroadcastAndTarget = new int[noOfHosts][noOfHosts];
+        for(int i = 0; i < noOfHosts;i++){
+            this.messageNoForBroadcastAndTarget[i] =  new int[noOfHosts];
+            for(int j = 0; j < noOfHosts; j++){
                 messageNoForBroadcastAndTarget[i][j] = 0;
             }
         }
@@ -88,6 +88,7 @@ public class ForwardMessages {
         int index = -1;
         int smallestMessageNo = Integer.MAX_VALUE;
         for(int i = 0; i < noOfTargets; i++){
+
             int targetsIndexForBroadcast = messageNoForBroadcastAndTarget[i][target];
             Optional<URBMessage> message = messageQueuePerBroadcast[i].get(targetsIndexForBroadcast);
             if(message.isEmpty()){
