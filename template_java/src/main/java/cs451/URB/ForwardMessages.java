@@ -53,12 +53,12 @@ public class ForwardMessages {
     public void add(URBMessage message){
         //todo contains check
         int sender = message.originalUrbSender;
-        messageQueuePerBroadcast[sender].enqueue(message);
+        messageQueuePerBroadcast[sender-1].enqueue(message);
     }
 
     public void removeMessage(URBMessage message){
-        IndexQueue broadcastQ = messageQueuePerBroadcast[message.originalUrbSender];
-        this.messageNoForBroadcastAndTarget[message.originalUrbSender] = broadcastQ.removeMessage(message,messageNoForBroadcastAndTarget[message.originalUrbSender]);
+        IndexQueue broadcastQ = messageQueuePerBroadcast[message.originalUrbSender-1];
+        this.messageNoForBroadcastAndTarget[message.originalUrbSender-1] = broadcastQ.removeMessage(message,messageNoForBroadcastAndTarget[message.originalUrbSender-1]);
     }
 
     public void removeMessages(Collection<URBMessage> messages){
