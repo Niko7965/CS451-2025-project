@@ -118,6 +118,10 @@ public class ForwardMessages {
     public void updatePlQueueOfTarget(PerfectLink pl, int target) throws InterruptedException {
         //todo - could send more than one
 
+        if(GlobalCfg.URB_ACK_DEBUG){
+            System.out.println("Trying to update");
+        }
+
         if(!pl.targetIsReadyForAnotherMessage(target)){
             return;
         }

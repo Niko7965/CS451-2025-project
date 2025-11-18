@@ -75,6 +75,7 @@ public static void main(String[] args) throws InterruptedException, IOException 
 
     int totalNoOfHosts = parser.hosts().size();
     UniformReliableBroadcast urb = new UniformReliableBroadcast(hostFromId(parser.myId(),parser),totalNoOfHosts,outputWriter, new URBCallbackLogger(outputWriter));
+
     URBCfgParser taskParser = new URBCfgParser(parser.config());
 
     Phonebook.init(parser.hosts());
