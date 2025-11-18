@@ -51,7 +51,10 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
         while(alive) {
 
+            System.out.println("doing repeat");
+
             synchronized (forwardMessages) {
+                System.out.println("doing forward");
                 //For each target update their pl queues:
                 for (int i = 0; i < noOfHosts; i++) {
                     if(i == selfId){
@@ -62,7 +65,9 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
             }
 
 
+
             synchronized (acknowledgements){
+                System.out.println("doing acks");
                 //Check if for any message in forward, that we have enough acks to deliver
                 ArrayList<URBMessage> deliverables = acknowledgements.getDeliverableMessages();
                 for (URBMessage payload : deliverables) {
