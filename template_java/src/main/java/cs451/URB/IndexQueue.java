@@ -12,8 +12,8 @@ public class IndexQueue {
 
      */
 
-    ArrayList<URBMessage> list;
-    Integer largestMessageNoSeen;
+    private ArrayList<URBMessage> list;
+    private Integer largestMessageNoSeen;
 
     public IndexQueue(){
         this.largestMessageNoSeen = null;
@@ -94,5 +94,9 @@ public class IndexQueue {
         list = newList;
 
         return minIndex;
+    }
+
+    public int size() {
+        return list.size();
     }
 }

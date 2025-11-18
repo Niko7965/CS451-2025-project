@@ -14,6 +14,8 @@ public class MessageAckStatus {
     }
 
     public void ack(int acker){
+        acker -= 1; //since one indexed
+
         if(!acks.get(acker)){
             noOfAcks += 1;
             acks.set(acker);

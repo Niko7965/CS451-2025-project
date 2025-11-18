@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class UniformReliableBroadcast extends Thread implements PLCallback {
 
+    Object canSendLock;
     private final ForwardMessages forwardMessages;
     private final Acknowledgements acknowledgements;
     private final Object messageNoLock;
@@ -95,6 +96,9 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
         }
         synchronized (forwardMessages){
+            while(forwardMessages.getNoOfMessagesInQueue(sender-1) > forwardMessages.maxQueueSize()){
+                //todo
+            }
             forwardMessages.add(urbPayload);
         }
 

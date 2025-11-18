@@ -67,6 +67,10 @@ public class ForwardMessages {
         }
     }
 
+    public int getNoOfMessagesInQueue(int broadcastNo){
+        return messageQueuePerBroadcast[broadcastNo].size();
+    }
+
 
     /**
      * Call to clean queues, that is if there is a broadcast queue,
@@ -138,5 +142,9 @@ public class ForwardMessages {
         messageNoForBroadcastAndTarget[broadcastNo][target] += 1;
 
 
+    }
+
+    public int maxQueueSize() {
+        return 100000;
     }
 }
