@@ -1,5 +1,6 @@
 package cs451.URB;
 
+import cs451.GlobalCfg;
 import cs451.Host;
 import cs451.PerfectLinks.PLCallback;
 import cs451.OutputWriter;
@@ -97,9 +98,12 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
         }
         synchronized (forwardMessages){
             while(forwardMessages.getNoOfMessagesInQueue(sender-1) > forwardMessages.maxQueueSize()){
-                //todo
+                //todo wait here
             }
             forwardMessages.add(urbPayload);
+            if(GlobalCfg.URB_ACK_DEBUG){
+                System.out.println("dbg b: "+payload+" "+sender);
+            }
         }
 
     }
@@ -111,7 +115,9 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
         int sender = m.getMetadata().getSenderId();
 
         synchronized (acknowledgements) {
-
+            if(GlobalCfg.URB_ACK_DEBUG){
+                System.out.println("a: "+sender+" "+m.getPayload());
+            }
             acknowledgements.addAck(receivedMessage, selfId);
             acknowledgements.addAck(receivedMessage, sender);
         }
