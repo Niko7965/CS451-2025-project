@@ -115,6 +115,7 @@ public class ForwardMessages {
 
 
 
+    //target here is 0 indexed
     public void updatePlQueueOfTarget(PerfectLink pl, int target) throws InterruptedException {
         //todo - could send more than one
 
@@ -141,9 +142,9 @@ public class ForwardMessages {
         URBMessage nextMessage = nextMessageOpt.get();
 
         if(GlobalCfg.URB_ACK_DEBUG){
-            System.out.println("addq pl: "+nextMessage.payload+" target: "+target);
+            System.out.println("addq pl: "+nextMessage.payload+" target: "+target+1);
         }
-        pl.sendMessage(nextMessage,selfNo,target);
+        pl.sendMessage(nextMessage,selfNo,target+1);
 
         messageNoForBroadcastAndTarget[broadcastNo][target] += 1;
 
