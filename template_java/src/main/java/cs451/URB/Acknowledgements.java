@@ -14,6 +14,7 @@ public class Acknowledgements {
 
     public Acknowledgements(int noOfTargets){
         this.noOfTargets = noOfTargets;
+        ackStatusHashMap = new HashMap<>();
 
     }
 
