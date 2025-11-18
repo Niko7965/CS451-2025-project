@@ -1,5 +1,6 @@
 package cs451.URB;
 
+import cs451.GlobalCfg;
 import cs451.PerfectLinks.PerfectLink;
 
 
@@ -137,6 +138,9 @@ public class ForwardMessages {
 
         URBMessage nextMessage = nextMessageOpt.get();
 
+        if(GlobalCfg.URB_ACK_DEBUG){
+            System.out.println("addq pl: "+nextMessage.payload+" target: "+target);
+        }
         pl.sendMessage(nextMessage,selfNo,target);
 
         messageNoForBroadcastAndTarget[broadcastNo][target] += 1;
