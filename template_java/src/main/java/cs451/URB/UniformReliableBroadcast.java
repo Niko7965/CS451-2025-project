@@ -111,6 +111,11 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
     @Override
     public void onDeliver(PLMessageRegular m) {
+        if(GlobalCfg.URB_PL_DEL_DEBUG){
+            System.out.println("pldel: "+m.getPayload()+" "+m.getMetadata().getSenderId());
+        }
+
+
         //PL Has delivered message m
         URBMessage receivedMessage = (URBMessage) m.getPayload();
         int sender = m.getMetadata().getSenderId();

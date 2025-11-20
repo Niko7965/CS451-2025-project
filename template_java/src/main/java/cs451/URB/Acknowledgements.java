@@ -6,6 +6,7 @@ import java.util.HashMap;
 public class Acknowledgements {
 
     int noOfTargets;
+    int highestFullyAckedMessageNo;
 
     //todo
     //Should not hash on inner payload, only on sender and message no
