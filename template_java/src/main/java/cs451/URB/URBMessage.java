@@ -17,4 +17,13 @@ public class URBMessage implements Serializable {
     public String toString() {
         return "URB: "+"Sender: "+originalUrbSender+" MessageNo: "+urbMessageNo;
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof URBMessage)){
+            return false;
+        }
+        URBMessage otherMessage = (URBMessage) o;
+        return this.originalUrbSender == otherMessage.originalUrbSender && this.urbMessageNo == otherMessage.urbMessageNo;
+    }
 }
