@@ -93,9 +93,7 @@ public class ForwardMessages {
         int index = -1;
         int smallestMessageNo = Integer.MAX_VALUE;
         for(int i = 0; i < noOfTargets; i++){
-            if(i == selfNo-1){
-                continue;
-            }
+
 
             int targetsIndexForBroadcast = messageNoForBroadcastAndTarget[i][target];
             Optional<URBMessage> message = messageQueuePerBroadcast[i].get(targetsIndexForBroadcast);
@@ -122,7 +120,9 @@ public class ForwardMessages {
     public void updatePlQueueOfTarget(PerfectLink pl, int target) throws InterruptedException {
         //todo - could send more than one
 
-
+        if(target == selfNo-1){
+            return;
+        }
 
         if(!pl.targetIsReadyForAnotherMessage(target)){
             return;
