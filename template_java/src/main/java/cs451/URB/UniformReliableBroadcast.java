@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 public class UniformReliableBroadcast extends Thread implements PLCallback {
 
-    Object canSendLock;
     private final ForwardMessages forwardMessages;
     private final Acknowledgements acknowledgements;
     private final Object messageNoLock;
@@ -72,10 +71,9 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
 
                 synchronized (forwardMessages){
-
-                    //ArrayList<URBMessage> fullyAckedMessages = acknowledgements.getFullyAckedMessages();
-                    //forwardMessages.removeMessages(fullyAckedMessages);
-                    //acknowledgements.deleteMessages(fullyAckedMessages);
+                    ArrayList<URBMessage> fullyAckedMessages = acknowledgements.getFullyAckedMessages();
+                    forwardMessages.removeMessages(fullyAckedMessages);
+                    acknowledgements.deleteMessages(fullyAckedMessages);
                 }
             }
 
