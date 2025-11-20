@@ -54,7 +54,7 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
             synchronized (forwardMessages) {
                 //For each target update their pl queues:
                 for (int i = 0; i < noOfHosts; i++) {
-                    if(i == selfId){
+                    if(i == selfId-1){
                         continue;
                     }
                     forwardMessages.updatePlQueueOfTarget(pl, i);

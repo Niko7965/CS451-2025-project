@@ -120,9 +120,6 @@ public class ForwardMessages {
     public void updatePlQueueOfTarget(PerfectLink pl, int target) throws InterruptedException {
         //todo - could send more than one
 
-        if(target == selfNo-1){
-            return;
-        }
 
         if(!pl.targetIsReadyForAnotherMessage(target)){
             return;
