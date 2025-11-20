@@ -15,6 +15,6 @@ public class URBMessage implements Serializable {
 
     @Override
     public String toString() {
-        return "URB: "+"Sender: "+originalUrbSender+" MessageNo: "+urbMessageNo;
+        return "URB: "+"Sender: "+originalUrbSender+" MessageNo: "+urbMessageNo+Integer.MAX_VALUE;
     }
 }
