@@ -72,9 +72,10 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
 
                 synchronized (forwardMessages){
-                    ArrayList<URBMessage> fullyAckedMessages = acknowledgements.getFullyAckedMessages();
-                    forwardMessages.removeMessages(fullyAckedMessages);
-                    acknowledgements.deleteMessages(fullyAckedMessages);
+
+                    //ArrayList<URBMessage> fullyAckedMessages = acknowledgements.getFullyAckedMessages();
+                    //forwardMessages.removeMessages(fullyAckedMessages);
+                    //acknowledgements.deleteMessages(fullyAckedMessages);
                 }
             }
 
