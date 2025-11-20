@@ -93,6 +93,9 @@ public class ForwardMessages {
         int index = -1;
         int smallestMessageNo = Integer.MAX_VALUE;
         for(int i = 0; i < noOfTargets; i++){
+            if(i == selfNo-1){
+                continue;
+            }
 
             int targetsIndexForBroadcast = messageNoForBroadcastAndTarget[i][target];
             Optional<URBMessage> message = messageQueuePerBroadcast[i].get(targetsIndexForBroadcast);

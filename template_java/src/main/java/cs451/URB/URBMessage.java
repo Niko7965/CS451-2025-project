@@ -12,4 +12,9 @@ public class URBMessage implements Serializable {
         this.originalUrbSender = originalUrbSender;
         this.urbMessageNo = urbMessageNo;
     }
+
+    @Override
+    public String toString() {
+        return "URB: "+"Sender: "+originalUrbSender+" MessageNo: "+urbMessageNo;
+    }
 }
