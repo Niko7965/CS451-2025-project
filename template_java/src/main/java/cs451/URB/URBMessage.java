@@ -26,4 +26,9 @@ public class URBMessage implements Serializable {
         URBMessage otherMessage = (URBMessage) o;
         return this.originalUrbSender == otherMessage.originalUrbSender && this.urbMessageNo == otherMessage.urbMessageNo;
     }
+
+    @Override
+    public int hashCode(){
+        return Integer.hashCode(originalUrbSender) ^ Integer.hashCode(urbMessageNo);
+    }
 }

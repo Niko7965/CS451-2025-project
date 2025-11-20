@@ -26,8 +26,8 @@ public class Acknowledgements {
     }
 
     public void addAck(URBMessage message, int acker){
-        if(!ackStatusHashMap.containsKey(message)){
 
+        if(!ackStatusHashMap.containsKey(message)){
             ackStatusHashMap.put(message,new MessageAckStatus(noOfTargets));
 
         }
