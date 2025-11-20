@@ -117,6 +117,9 @@ public class StubbornLinkSender extends Thread{
 
                     DatagramPacket p = makePacketForReg(m);
                     synchronized (socket) {
+                        if(GlobalCfg.STUBBORN_SEND_DEBUG) {
+                            System.out.println("Stubborn sending " + m);
+                        }
                         socket.send(p);
                     }
                 }
