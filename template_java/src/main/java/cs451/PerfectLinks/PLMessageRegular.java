@@ -55,4 +55,9 @@ public class PLMessageRegular extends PLMessage {
     public boolean isAck() {
         return false;
     }
+
+    @Override
+    public String toString(){
+        return "PLMessage | Target: "+metadata.getReceiverId()+" Payload: "+payload;
+    }
 }
