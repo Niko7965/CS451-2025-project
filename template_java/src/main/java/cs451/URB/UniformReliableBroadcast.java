@@ -7,6 +7,7 @@ import cs451.OutputWriter;
 import cs451.PerfectLinks.PLMessageRegular;
 import cs451.PerfectLinks.PerfectLink;
 
+import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
     private final PerfectLink pl;
     int noOfHosts;
     int selfId;
+    OutputWriter outputWriter;
     boolean alive;
     URBCallback callBack;
 
@@ -33,6 +35,7 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
         this.noOfHosts = noOfHosts;
         this.callBack = callBack;
+        this.outputWriter = outputWriter;
         alive = true;
 
     }
@@ -83,11 +86,11 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
     }
 
 
-    public void broadcastInt(int m){
+    public void broadcastInt(int m) throws IOException {
         broadcast(m,selfId);
     }
 
-    public void broadcast(Object payload, int sender){
+    public void broadcast(Object payload, int sender) throws IOException {
         URBMessage urbPayload;
         synchronized (messageNoLock) {
             //todo
@@ -97,13 +100,14 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
         }
         synchronized (forwardMessages){
-            while(forwardMessages.getNoOfMessagesInQueue(sender-1) > forwardMessages.maxQueueSize()){
-                //todo wait here
-            }
+
             forwardMessages.add(urbPayload);
             if(GlobalCfg.URB_ACK_DEBUG){
                 System.out.println("dbg b: "+payload+" "+sender);
             }
+
+            System.out.println("b "+payload);
+            outputWriter.write("b "+payload +"\n");
         }
 
     }
