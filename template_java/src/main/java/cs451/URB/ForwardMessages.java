@@ -134,6 +134,7 @@ public class ForwardMessages {
         }
 
         int broadcastNo = broadcastOpt.get();
+        System.out.println("Broadcastno was: "+broadcastNo);
         int messageIndex = messageNoForBroadcastAndTarget[broadcastNo][target];
 
         Optional<URBMessage> nextMessageOpt = messageQueuePerBroadcast[broadcastNo].get(messageIndex);
