@@ -136,6 +136,9 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
         }
 
         synchronized (forwardMessages) {
+            if(GlobalCfg.URB_DEADLOCK_BUG_DEBUG){
+                System.out.println("Got forward messages lock");
+            }
             //note, assumes perfect order of inputs
             forwardMessages.add(receivedMessage);
         }
