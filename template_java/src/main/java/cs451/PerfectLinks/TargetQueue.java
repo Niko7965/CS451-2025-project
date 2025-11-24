@@ -20,7 +20,7 @@ public class TargetQueue {
 
     public TargetQueue(){
         this.q = new LinkedBlockingQueue<>();
-        this.nextMessageNo = Integer.MIN_VALUE;
+        this.nextMessageNo = 0;
         this.queueLock = new Object();
         this.canPush = true;
     }
