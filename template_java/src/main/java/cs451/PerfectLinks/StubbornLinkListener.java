@@ -47,6 +47,9 @@ public class StubbornLinkListener extends Thread {
 
 
             PLMessage message = PLMessage.fromBytes(packet.getData());
+            if(GlobalCfg.PL_ACK_DEBUG){
+                System.out.println("stubborn heard message "+message);
+            }
 
 
             if(message.isAck()){
