@@ -16,7 +16,7 @@ public class TargetQueue {
     //Concurrency vars
     final Object queueLock;
     boolean canPush;
-    private final int MAX_QUEUE_SIZE = 1000;
+    private final int MAX_QUEUE_SIZE = Integer.MAX_VALUE;
 
     public TargetQueue(){
         this.q = new LinkedBlockingQueue<>();
