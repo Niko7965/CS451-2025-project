@@ -54,6 +54,9 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
         while(alive) {
             synchronized (forwardMessages) {
+                if(GlobalCfg.URB_DEADLOCK_BUG_DEBUG){
+                    System.out.println("Send repeat took forward lock");
+                }
                 //For each target update their pl queues:
                 for (int i = 0; i < noOfHosts; i++) {
                     if(i == selfId-1){
@@ -61,6 +64,9 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
                     }
                     forwardMessages.updatePlQueueOfTarget(pl, i);
                 }
+            }
+            if(GlobalCfg.URB_DEADLOCK_BUG_DEBUG){
+                System.out.println("Send repeat released forward lock");
             }
 
 
@@ -74,9 +80,15 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
 
                 synchronized (forwardMessages){
+                    if(GlobalCfg.URB_DEADLOCK_BUG_DEBUG){
+                        System.out.println("Ack repeat took forward lock");
+                    }
                     ArrayList<URBMessage> fullyAckedMessages = acknowledgements.getFullyAckedMessages();
                     forwardMessages.removeMessages(fullyAckedMessages);
                     acknowledgements.deleteMessages(fullyAckedMessages);
+                }
+                if(GlobalCfg.URB_DEADLOCK_BUG_DEBUG){
+                    System.out.println("Ack repeat released forward lock");
                 }
             }
 
@@ -100,6 +112,9 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
         }
         synchronized (forwardMessages){
+            if(GlobalCfg.URB_DEADLOCK_BUG_DEBUG){
+                System.out.println("Broadcast took forward lock");
+            }
 
             forwardMessages.add(urbPayload);
             if(GlobalCfg.URB_ACK_DEBUG){
@@ -108,6 +123,9 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
             System.out.println("b "+payload);
             outputWriter.write("b "+payload +"\n");
+        }
+        if(GlobalCfg.URB_DEADLOCK_BUG_DEBUG){
+            System.out.println("Broadcast released forward lock");
         }
 
     }
