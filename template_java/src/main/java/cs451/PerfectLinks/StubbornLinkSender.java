@@ -131,7 +131,7 @@ public class StubbornLinkSender extends Thread{
             synchronized (toAck){
                 for (PLAckMessage m : toAck){
                     if(GlobalCfg.PL_ACK_DEBUG) {
-                        System.out.println("Acking: " + m.getMetadata().getMessageNo());
+                        System.out.println("Acking: " + m.getMetadata().getMessageNo() +" from: "+m.getMetadata().getSenderId());
                     }
                     DatagramPacket p = makePacketForAck(m);
                     synchronized (socket){
