@@ -68,26 +68,6 @@ public class ForwardMessages {
         }
     }
 
-    public int getNoOfMessagesInQueue(int broadcastNo){
-        return messageQueuePerBroadcast[broadcastNo].size();
-    }
-
-
-    /**
-     * Call to clean queues, that is if there is a broadcast queue,
-     * Where every process has already sent up to message k, we can remove the first k indexes
-     * Might be redundant if we clean via acks
-     */
-    public void cleanQueues(){
-        for(int broadcastNo = 0; broadcastNo < noOfTargets; broadcastNo++){
-            int[] indexesForBroadcastNo = messageNoForBroadcastAndTarget[broadcastNo];
-            int cleanedIndexes = messageQueuePerBroadcast[broadcastNo].clean(indexesForBroadcastNo);
-
-            for(int i = 0; i < noOfTargets; i++){
-                indexesForBroadcastNo[i] -= cleanedIndexes;
-            }
-        }
-    }
 
     private Optional<Integer> getQWithLowestMessageNoForTarget(int target){
         int index = -1;
@@ -96,7 +76,6 @@ public class ForwardMessages {
 
 
             int targetsIndexForBroadcast = messageNoForBroadcastAndTarget[i][target];
-            System.out.println(targetsIndexForBroadcast);
 
             Optional<URBMessage> messageOpt = messageQueuePerBroadcast[i].get(targetsIndexForBroadcast);
             if(messageOpt.isEmpty()){
