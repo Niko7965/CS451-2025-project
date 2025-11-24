@@ -102,7 +102,7 @@ public class StubbornLinkSender extends Thread{
             }
 
 
-            //Thread.sleep(100);
+            Thread.sleep(10);
 
 
             //Send messages that have not yet been acked
