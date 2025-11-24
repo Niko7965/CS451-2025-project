@@ -92,7 +92,7 @@ public class TargetQueue {
             int incomingMessageNo = am.getMetadataForAckedMessage().getMessageNo();
 
             if(GlobalCfg.PL_ACK_DEBUG) {
-                System.out.println(incomingMessageNo + " " + currentMessageNo);
+                System.out.println("placking: "+incomingMessageNo + " " + currentMessageNo);
             }
 
             if (incomingMessageNo == currentMessageNo) {
