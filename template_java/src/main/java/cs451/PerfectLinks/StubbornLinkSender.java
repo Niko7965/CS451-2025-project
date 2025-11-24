@@ -97,6 +97,9 @@ public class StubbornLinkSender extends Thread{
         while(true){
             synchronized (killLock){
                 if(killed){
+                    if(GlobalCfg.PL_ACK_DEBUG){
+                        System.out.println("PL Sender killed");
+                    }
                     return;
                 }
             }

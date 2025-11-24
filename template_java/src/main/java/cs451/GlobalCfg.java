@@ -5,4 +5,5 @@ public class GlobalCfg {
     public static final boolean PL_ACK_DEBUG = true;
     public static final boolean URB_ACK_DEBUG = true;
     public static final boolean STUBBORN_SEND_DEBUG = false;
+    public static final boolean URB_DEADLOCK_BUG_DEBUG = true;
 }

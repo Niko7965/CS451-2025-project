@@ -136,6 +136,10 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
             forwardMessages.add(receivedMessage);
         }
 
+        if(GlobalCfg.URB_DEADLOCK_BUG_DEBUG) {
+            System.out.println("Finished deliver");
+        }
+
     }
 
 
