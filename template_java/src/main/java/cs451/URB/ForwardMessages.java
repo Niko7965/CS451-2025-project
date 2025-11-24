@@ -96,6 +96,8 @@ public class ForwardMessages {
 
 
             int targetsIndexForBroadcast = messageNoForBroadcastAndTarget[i][target];
+            System.out.println(targetsIndexForBroadcast);
+
             Optional<URBMessage> messageOpt = messageQueuePerBroadcast[i].get(targetsIndexForBroadcast);
             if(messageOpt.isEmpty()){
                 continue;
@@ -155,7 +157,5 @@ public class ForwardMessages {
 
     }
 
-    public int maxQueueSize() {
-        return 100000;
-    }
+
 }
