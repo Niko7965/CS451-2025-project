@@ -96,12 +96,15 @@ public class ForwardMessages {
 
 
             int targetsIndexForBroadcast = messageNoForBroadcastAndTarget[i][target];
-            Optional<URBMessage> message = messageQueuePerBroadcast[i].get(targetsIndexForBroadcast);
-            if(message.isEmpty()){
+            Optional<URBMessage> messageOpt = messageQueuePerBroadcast[i].get(targetsIndexForBroadcast);
+            if(messageOpt.isEmpty()){
                 continue;
             }
 
-            if(targetsIndexForBroadcast < smallestMessageNo){
+            URBMessage message = messageOpt.get();
+            int messageNo = message.urbMessageNo;
+
+            if(messageNo < smallestMessageNo){
                 smallestMessageNo = targetsIndexForBroadcast;
                 index = i;
             }
