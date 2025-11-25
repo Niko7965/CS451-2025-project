@@ -122,7 +122,7 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
             }
 
             System.out.println("b "+payload);
-            outputWriter.write("b "+payload +"\n");
+            outputWriter.write("b "+payload+"\n");
         }
         if(GlobalCfg.URB_DEADLOCK_BUG_DEBUG){
             System.out.println("Broadcast released forward lock");
