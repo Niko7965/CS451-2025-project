@@ -71,6 +71,9 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
 
 
+            if(!alive){
+                break;
+            }
             synchronized (acknowledgements){
                 //Check if for any message in forward, that we have enough acks to deliver
                 ArrayList<URBMessage> deliverables = acknowledgements.getDeliverableMessages();
@@ -91,6 +94,7 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
                     System.out.println("Ack repeat released forward lock");
                 }
             }
+
 
 
         }
@@ -123,6 +127,7 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
             System.out.println("b "+payload);
             outputWriter.write("b "+payload+"\n");
+
         }
         if(GlobalCfg.URB_DEADLOCK_BUG_DEBUG){
             System.out.println("Broadcast released forward lock");

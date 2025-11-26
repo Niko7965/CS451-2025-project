@@ -9,14 +9,20 @@ public class OutputWriter {
 
     private final BufferedWriter writer;
     int lineNo;
+    boolean open;
 
     public OutputWriter(String path) throws IOException {
         writer = new BufferedWriter(new FileWriter(path));
+        open = true;
         lineNo = 0;
     }
 
     public void write(String s) throws IOException {
         synchronized (writer){
+            if(!open){
+                return;
+            }
+
             writer.write(s);
             lineNo++;
 
@@ -30,6 +36,7 @@ public class OutputWriter {
     public void close() throws IOException {
         synchronized (writer){
             writer.close();
+            open = false;
         }
     }
 }
