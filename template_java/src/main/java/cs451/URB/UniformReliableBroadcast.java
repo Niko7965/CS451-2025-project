@@ -22,6 +22,7 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
     int noOfHosts;
     int selfId;
     OutputWriter outputWriter;
+    private final Object aliveLock = new Object();
     boolean alive;
     URBCallback callBack;
 
@@ -52,7 +53,13 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
     public void repeat() throws InterruptedException {
 
-        while(alive) {
+        while(true) {
+            synchronized (aliveLock){
+                if(!alive){
+                    break;
+                }
+            }
+
             synchronized (forwardMessages) {
                 if(GlobalCfg.URB_DEADLOCK_BUG_DEBUG){
                     System.out.println("Send repeat took forward lock");
@@ -62,7 +69,9 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
                     if(i == selfId-1){
                         continue;
                     }
-                    forwardMessages.updatePlQueueOfTarget(pl, i);
+                    synchronized (pl) {
+                        forwardMessages.updatePlQueueOfTarget(pl, i);
+                    }
                 }
             }
             if(GlobalCfg.URB_DEADLOCK_BUG_DEBUG){
@@ -71,9 +80,7 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
 
 
 
-            if(!alive){
-                break;
-            }
+
             synchronized (acknowledgements){
                 //Check if for any message in forward, that we have enough acks to deliver
                 ArrayList<URBMessage> deliverables = acknowledgements.getDeliverableMessages();
@@ -180,7 +187,11 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
     }
 
     public void kill() {
-        this.pl.kill();
-        this.alive = false;
+        synchronized (pl){
+            pl.kill();
+        }
+        synchronized (aliveLock){
+            this.alive = false;
+        }
     }
 }
