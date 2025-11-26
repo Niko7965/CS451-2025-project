@@ -35,6 +35,7 @@ public class OutputWriter {
 
     public void close() throws IOException {
         synchronized (writer){
+            writer.flush();
             writer.close();
             open = false;
         }
