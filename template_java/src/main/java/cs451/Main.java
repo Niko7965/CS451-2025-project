@@ -82,7 +82,8 @@ public static void main(String[] args) throws InterruptedException, IOException 
 
     int noOfMessages = taskParser.getNoOfMessages();
 
-    for(int i = 1; i <= noOfMessages; i++){
+    //todo
+    for(int i = 1; i <= 10; i++){
         urb.broadcastInt(i);
     }
 
