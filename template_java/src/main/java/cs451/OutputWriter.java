@@ -7,6 +7,7 @@ import java.io.IOException;
 public class OutputWriter {
 //https://www.baeldung.com/java-synchronized was used as reference for sync
 
+    private final int maxBufferSize = 1;
     private final BufferedWriter writer;
     int lineNo;
     boolean open;
@@ -26,7 +27,7 @@ public class OutputWriter {
             writer.write(s);
             lineNo++;
 
-            if(lineNo == 30){
+            if(lineNo == maxBufferSize){
                 lineNo = 0;
                 writer.flush();
             }
