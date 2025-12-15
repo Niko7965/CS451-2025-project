@@ -105,6 +105,7 @@ public class LatticeAgreements extends Thread implements BebCallback{
 
     @Override
     public void onDeliver(Object o) {
+
         if(o instanceof LatticeVote){
             giveVote((LatticeVote) o);
             return;

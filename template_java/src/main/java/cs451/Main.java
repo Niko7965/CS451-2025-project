@@ -105,10 +105,10 @@ public class Main {
     public static void printSet(Set<Integer> set){
         ArrayList<Integer> setList = new ArrayList<>(set);
         setList.sort(Integer::compare);
-        for(Integer i : set){
+        for(Integer i : setList){
             //todo: if error, maybe the extra space
             //todo: also need to actually write to outputfile
-            System.out.print(setList.get(i)+" ");
+            System.out.print(i+" ");
         }
         System.out.println();
     }
