@@ -2,7 +2,6 @@ package cs451.PerfectLinks;
 
 import cs451.*;
 
-import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
@@ -15,25 +14,18 @@ public class PerfectLink implements PLCallback, AckCallBack {
     PLCallback callBack;
     StubbornLinkListener stubbornLinkListener;
     StubbornLinkSender stubbornLinkSender;
-    OutputWriter outputWriter;
 
     boolean paused;
 
-    public PerfectLink(Host selfHost, PLCallback callBack, OutputWriter w) throws SocketException, UnknownHostException {
+    public PerfectLink(Host selfHost, PLCallback callBack) throws SocketException, UnknownHostException {
         this.stubbornLinkListener = new StubbornLinkListener(selfHost,this,this);
         this.stubbornLinkListener.start();
         this.callBack = callBack;
         this.stubbornLinkSender = new StubbornLinkSender(selfHost.getId());
         this.stubbornLinkSender.start();
-        this.outputWriter = w;
         paused = false;
     }
 
-    public void sendIntMessage(int payload, int sender, int receiver) throws IOException, InterruptedException {
-        sendMessage(payload,sender,receiver);
-        System.out.println("b "+payload);
-        outputWriter.write("b "+payload +"\n");
-    }
 
 
 

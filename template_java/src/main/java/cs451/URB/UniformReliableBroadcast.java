@@ -32,7 +32,7 @@ public class UniformReliableBroadcast extends Thread implements PLCallback {
         acknowledgements = new Acknowledgements(noOfHosts);
         messageNoLock = new Object();
         messageNo = 0;
-        pl = new PerfectLink(selfHost,this,outputWriter);
+        pl = new PerfectLink(selfHost,this);
 
         this.noOfHosts = noOfHosts;
         this.callBack = callBack;
