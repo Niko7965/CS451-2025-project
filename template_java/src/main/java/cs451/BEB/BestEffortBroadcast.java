@@ -1,5 +1,6 @@
 package cs451.BEB;
 
+import cs451.GlobalCfg;
 import cs451.Host;
 import cs451.PerfectLinks.PLCallback;
 import cs451.PerfectLinks.PLMessageRegular;
@@ -24,6 +25,12 @@ public class BestEffortBroadcast implements PLCallback {
 
 
     public void broadcast(Object payload) throws InterruptedException {
+
+        if(GlobalCfg.BEB_DBG){
+            System.out.println("BEB Broadcasting: ");
+            System.out.println(payload);
+        }
+
         for(int i = 1; i <= noOfTargets; i++){
             if(i == selfId){
                 continue;
@@ -35,6 +42,9 @@ public class BestEffortBroadcast implements PLCallback {
 
     @Override
     public void onDeliver(PLMessageRegular m) {
+        if(GlobalCfg.BEB_DBG){
+            System.out.println("BEB Delivered "+m.getPayload());
+        }
         bebCallback.onDeliver(m.getPayload());
     }
 

@@ -1,6 +1,9 @@
 package cs451.LatticeAgreement;
 
 
+import cs451.GlobalCfg;
+import cs451.Main;
+
 import java.util.Optional;
 import java.util.Set;
 
@@ -33,6 +36,11 @@ public class LatticeAgreement {
         roundNo++;
         ackCount = 0;
         nackCount = 0;
+
+        if(GlobalCfg.LA_DBG){
+            System.out.println("Proposed");
+            Main.printSet(proposal);
+        }
 
         LatticeProposal proposalMessage = new LatticeProposal(instanceNo,proposedSet, roundNo, LatticeAgreements.getSenderId());
         LatticeAgreements.getBeb().broadcast(proposalMessage);

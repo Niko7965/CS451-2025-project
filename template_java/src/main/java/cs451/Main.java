@@ -108,8 +108,9 @@ public class Main {
         for(Integer i : set){
             //todo: if error, maybe the extra space
             //todo: also need to actually write to outputfile
-            System.out.println(i+" ");
+            System.out.print(setList.get(i)+" ");
         }
+        System.out.println();
     }
 
 

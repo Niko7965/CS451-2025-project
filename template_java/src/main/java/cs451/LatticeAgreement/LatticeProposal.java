@@ -17,4 +17,9 @@ public class LatticeProposal implements Serializable {
         this.senderId = senderId;
     }
 
+
+    public String toString(){
+        return "LP - i = "+instanceNo;
+    }
+
 }

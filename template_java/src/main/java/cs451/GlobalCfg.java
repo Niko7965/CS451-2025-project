@@ -6,4 +6,8 @@ public class GlobalCfg {
     public static final boolean URB_ACK_DEBUG = false;
     public static final boolean STUBBORN_SEND_DEBUG = false;
     public static final boolean URB_DEADLOCK_BUG_DEBUG = false;
+
+
+    public static final boolean BEB_DBG = true;
+    public static final boolean LA_DBG = true;
 }
