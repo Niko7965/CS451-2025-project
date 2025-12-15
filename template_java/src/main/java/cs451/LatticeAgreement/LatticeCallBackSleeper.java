@@ -7,10 +7,8 @@ public class LatticeCallBackSleeper implements LatticeCallback {
 
 
     private final ArrayList<Set<Integer>> decisions;
-    private final Object lock;
 
     public LatticeCallBackSleeper(int noOfAgreements){
-        lock = new Object();
         decisions = new ArrayList<>(noOfAgreements);
         for(int i = 0; i < noOfAgreements; i++){
             decisions.add(null);
@@ -20,7 +18,7 @@ public class LatticeCallBackSleeper implements LatticeCallback {
     public Set<Integer> getDecision(int index) throws InterruptedException {
         synchronized (decisions){
             while (decisions.get(index) == null){
-                lock.wait();
+                decisions.wait();
             }
             return decisions.get(index);
         }
@@ -31,7 +29,7 @@ public class LatticeCallBackSleeper implements LatticeCallback {
     public void onDeliver(LatticeDecision decision) {
         synchronized (decisions){
             decisions.set(decision.instanceNo,decision.decidedSet);
-            lock.notifyAll();
+            decisions.notifyAll();
         }
     }
 }
