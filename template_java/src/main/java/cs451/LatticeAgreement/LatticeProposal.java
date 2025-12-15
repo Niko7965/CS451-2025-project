@@ -1,8 +1,9 @@
 package cs451.LatticeAgreement;
 
+import java.io.Serializable;
 import java.util.Set;
 
-public class LatticeProposal {
+public class LatticeProposal implements Serializable {
 
     int instanceNo;
     Set<Integer> proposedSet;

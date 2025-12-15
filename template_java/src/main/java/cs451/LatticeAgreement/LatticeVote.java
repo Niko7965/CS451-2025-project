@@ -1,8 +1,9 @@
 package cs451.LatticeAgreement;
 
+import java.io.Serializable;
 import java.util.Set;
 
-public class LatticeVote {
+public class LatticeVote implements Serializable {
 
     int instanceNo;
     boolean isAck;
