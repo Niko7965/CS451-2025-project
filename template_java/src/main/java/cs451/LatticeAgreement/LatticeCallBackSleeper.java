@@ -7,9 +7,10 @@ public class LatticeCallBackSleeper implements LatticeCallback {
 
 
     private final ArrayList<Set<Integer>> decisions;
-    private Object lock;
+    private final Object lock;
 
     public LatticeCallBackSleeper(int noOfAgreements){
+        lock = new Object();
         decisions = new ArrayList<>(noOfAgreements);
         for(int i = 0; i < noOfAgreements; i++){
             decisions.add(null);
