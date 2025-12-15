@@ -106,7 +106,8 @@ public class Main {
         ArrayList<Integer> setList = new ArrayList<>(set);
         setList.sort(Integer::compare);
         for(Integer i : set){
-            //todo if error, maybe the extra space
+            //todo: if error, maybe the extra space
+            //todo: also need to actually write to outputfile
             System.out.println(i+" ");
         }
     }

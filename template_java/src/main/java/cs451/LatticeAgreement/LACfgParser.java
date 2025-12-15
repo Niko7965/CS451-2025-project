@@ -22,6 +22,7 @@ public class LACfgParser {
         noOfProposals = sc.nextInt();
         maxElementsPerProposal = sc.nextInt();
         numberOfDistinctElements = sc.nextInt();
+        sc.nextLine();
     }
 
     public Set<Integer> getNextProposalSet(){
