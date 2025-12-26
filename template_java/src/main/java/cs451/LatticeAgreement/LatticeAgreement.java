@@ -70,7 +70,7 @@ public class LatticeAgreement {
 
     public Optional<Set<Integer>> getDeliverableSet(int noOfProcesses){
         if(GlobalCfg.LA_DBG){
-            System.out.println(ackCount);
+            System.out.println("ack count: "+ackCount);
         }
 
         if(active && ackCount > noOfProcesses / 2){
