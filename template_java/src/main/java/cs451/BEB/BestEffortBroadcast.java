@@ -43,7 +43,7 @@ public class BestEffortBroadcast implements PLCallback {
     @Override
     public void onDeliver(PLMessageRegular m) {
         if(GlobalCfg.BEB_DBG){
-            System.out.println("BEB Delivered "+m.getPayload());
+            System.out.println("BEB Delivered "+m.getPayload()+" from: "+m.getMetadata().getSenderId());
         }
         bebCallback.onDeliver(m.getPayload());
     }
