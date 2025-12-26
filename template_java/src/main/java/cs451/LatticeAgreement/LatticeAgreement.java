@@ -61,16 +61,22 @@ public class LatticeAgreement {
 
         if(vote.isAck){
             ackCount++;
+            if(GlobalCfg.LA_DBG) {
+                System.out.println("Ack count: " + ackCount);
+            }
         }
         else {
             nackCount++;
             proposedSet.addAll(vote.proposedSet);
+            if(GlobalCfg.LA_DBG) {
+                System.out.println("Nacked, new set:");
+                Main.printSet(proposedSet);
+            }
+
         }
     }
 
     public Optional<Set<Integer>> getDeliverableSet(int noOfProcesses){
-
-
         if(active && ackCount > noOfProcesses / 2){
             active = false;
             return Optional.of(proposedSet);
@@ -86,6 +92,10 @@ public class LatticeAgreement {
         roundNo++;
         ackCount = 0;
         nackCount = 0;
+
+        if(GlobalCfg.LA_DBG){
+            System.out.println("rebroadcasting, round:"+roundNo);
+        }
 
         LatticeProposal proposalMessage = new LatticeProposal(instanceNo,proposedSet, roundNo, LatticeAgreements.getSenderId());
         LatticeAgreements.getBeb().broadcast(proposalMessage);
