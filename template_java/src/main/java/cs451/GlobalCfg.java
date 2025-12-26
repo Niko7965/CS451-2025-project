@@ -10,5 +10,6 @@ public class GlobalCfg {
 
     public static final boolean BEB_DBG = false;
     public static final boolean LA_DBG = false;
+    public static final boolean LA_VOTE_DBG = true;
     public static final boolean LA_SPARSE_DBG = true;
 }

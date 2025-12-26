@@ -61,8 +61,8 @@ public class LatticeAgreement {
 
         if(vote.isAck){
             ackCount++;
-            if(GlobalCfg.LA_DBG) {
-                System.out.println("Ack count: " + ackCount);
+            if(GlobalCfg.LA_VOTE_DBG) {
+                System.out.println("Instance no: "+instanceNo+" Ack count: " + ackCount);
             }
         }
         else {

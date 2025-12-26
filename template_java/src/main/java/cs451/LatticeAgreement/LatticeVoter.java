@@ -17,7 +17,7 @@ public class LatticeVoter {
     private LatticeVote getVoteForProposal(LatticeProposal proposal) {
         Set<Integer> proposalSet = proposal.proposedSet;
 
-        if(GlobalCfg.LA_DBG){
+        if(GlobalCfg.LA_VOTE_DBG){
             System.out.println("Voting:");
             System.out.println("Proposal:");
             Main.printSet(proposalSet);
@@ -26,14 +26,14 @@ public class LatticeVoter {
         }
 
         if (proposalSet.containsAll(acceptedValue)) {
-            if(GlobalCfg.LA_DBG){
+            if(GlobalCfg.LA_VOTE_DBG){
                 System.out.println("Voted yes");
             }
 
             acceptedValue = proposalSet;
             return LatticeVote.positiveVoteFromProposal(proposal);
         } else {
-            if(GlobalCfg.LA_DBG){
+            if(GlobalCfg.LA_VOTE_DBG){
                 System.out.println("Voted no");
             }
 
