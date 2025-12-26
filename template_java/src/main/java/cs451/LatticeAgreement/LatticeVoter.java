@@ -18,7 +18,7 @@ public class LatticeVoter {
         Set<Integer> proposalSet = proposal.proposedSet;
 
         if(GlobalCfg.LA_VOTE_DBG){
-            System.out.println("Voting:");
+            System.out.println("Voting for instance no "+instanceNo+":");
             System.out.println("Proposal:");
             Main.printSet(proposalSet);
             System.out.println("Current:");

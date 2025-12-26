@@ -85,19 +85,17 @@ public class LatticeAgreement {
     }
 
     public void reBroadcastIfNackedAndSufficientlyVoted(int noOfProcesses) throws InterruptedException {
-        if(!(active && nackCount > 0 && ackCount+nackCount > noOfProcesses/2)){
-            return;
+        if(active && nackCount > 0 && ackCount+nackCount > noOfProcesses/2) {
+            roundNo++;
+            ackCount = 0;
+            nackCount = 0;
+
+            if (GlobalCfg.LA_DBG) {
+                System.out.println("rebroadcasting, round:" + roundNo);
+            }
+
+            LatticeProposal proposalMessage = new LatticeProposal(instanceNo, proposedSet, roundNo, LatticeAgreements.getSenderId());
+            LatticeAgreements.getBeb().broadcast(proposalMessage);
         }
-
-        roundNo++;
-        ackCount = 0;
-        nackCount = 0;
-
-        if(GlobalCfg.LA_DBG){
-            System.out.println("rebroadcasting, round:"+roundNo);
-        }
-
-        LatticeProposal proposalMessage = new LatticeProposal(instanceNo,proposedSet, roundNo, LatticeAgreements.getSenderId());
-        LatticeAgreements.getBeb().broadcast(proposalMessage);
     }
 }
