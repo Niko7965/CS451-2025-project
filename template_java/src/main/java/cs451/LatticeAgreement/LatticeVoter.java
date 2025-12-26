@@ -44,7 +44,7 @@ public class LatticeVoter {
 
     public void sendVoteForProposal(LatticeProposal proposal) throws InterruptedException {
         LatticeVote vote = getVoteForProposal(proposal);
-        LatticeAgreements.getBeb().broadcast(vote);
+        LatticeAgreements.getBeb().sendToTarget(vote, proposal.senderId);
     }
 
 

@@ -23,6 +23,10 @@ public class BestEffortBroadcast implements PLCallback {
         this.noOfTargets = noOfTargets;
     }
 
+    public void sendToTarget(Object payload, int targetNo) throws InterruptedException {
+        pl.sendMessage(payload,selfId,targetNo);
+    }
+
 
     public void broadcast(Object payload) throws InterruptedException {
 
