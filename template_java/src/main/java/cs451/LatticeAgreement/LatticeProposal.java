@@ -19,7 +19,7 @@ public class LatticeProposal implements Serializable {
 
 
     public String toString(){
-        return "LP - i = "+instanceNo;
+        return "LProposal - i = "+instanceNo;
     }
 
 }

@@ -85,6 +85,8 @@ public class Main {
         LatticeAgreements latticeAgreements = new LatticeAgreements(parser.myId(), parser.hosts().size(), Phonebook.hostFromId(parser.myId()), callback);
 
 
+        System.out.println("my id: "+parser.myId());
+
         for (int i = 0; i < noOfAgreements; i++) {
             Set<Integer> proposalSet = laCfgParser.getNextProposalSet();
             latticeAgreements.propose(i, proposalSet);

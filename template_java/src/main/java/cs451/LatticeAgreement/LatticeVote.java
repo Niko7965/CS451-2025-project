@@ -28,7 +28,7 @@ public class LatticeVote implements Serializable {
 
 
     public String toString(){
-        return ("LV - i = "+instanceNo+ "isAck = "+isAck);
+        return ("LVote - i = "+instanceNo+ "isAck = "+isAck);
     }
 
 }
