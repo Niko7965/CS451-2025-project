@@ -83,7 +83,7 @@ public class Main {
         Phonebook.init(parser.hosts());
         LatticeCallBackSleeper callback = new LatticeCallBackSleeper(noOfAgreements);
         LatticeAgreements latticeAgreements = new LatticeAgreements(parser.myId(), parser.hosts().size(), Phonebook.hostFromId(parser.myId()), callback);
-
+        latticeAgreements.start();
 
         System.out.println("my id: "+parser.myId());
 
