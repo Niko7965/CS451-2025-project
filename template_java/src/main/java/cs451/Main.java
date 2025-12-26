@@ -91,6 +91,11 @@ public class Main {
             Set<Integer> proposalSet = laCfgParser.getNextProposalSet();
             latticeAgreements.propose(i, proposalSet);
             Set<Integer> decisionSet =  callback.getDecision(i);
+
+            if(GlobalCfg.LA_DBG){
+                System.out.println("Decided on set for instance "+i+":");
+            }
+
             printSet(decisionSet);
         }
 
