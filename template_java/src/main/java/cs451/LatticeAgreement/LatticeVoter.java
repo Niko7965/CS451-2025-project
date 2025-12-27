@@ -3,6 +3,7 @@ package cs451.LatticeAgreement;
 import cs451.GlobalCfg;
 import cs451.Main;
 
+
 import java.util.Set;
 
 public class LatticeVoter {
@@ -40,7 +41,10 @@ public class LatticeVoter {
             }
 
             acceptedValue.addAll(proposalSet);
-            return LatticeVote.negativeVoteFromProposal(proposal,selfId,acceptedValue);
+
+            Set<Integer> acceptedValueClone = Set.copyOf(acceptedValue);
+
+            return LatticeVote.negativeVoteFromProposal(proposal,selfId,acceptedValueClone);
         }
     }
 
