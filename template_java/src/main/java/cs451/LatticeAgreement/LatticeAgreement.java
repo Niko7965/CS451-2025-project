@@ -70,6 +70,7 @@ public class LatticeAgreement {
             proposedSet.addAll(vote.proposedSet);
             if(GlobalCfg.LA_DBG) {
                 System.out.println("Nacked, new set:");
+                Main.printSet(vote.proposedSet);
                 Main.printSet(proposedSet);
             }
 
