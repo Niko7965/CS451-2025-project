@@ -40,7 +40,7 @@ public class LatticeVoter {
             }
 
             acceptedValue.addAll(proposalSet);
-            return LatticeVote.negativeVoteFromProposal(proposal,selfId);
+            return LatticeVote.negativeVoteFromProposal(proposal,selfId,acceptedValue);
         }
     }
 

@@ -24,8 +24,8 @@ public class LatticeVote implements Serializable {
         return new LatticeVote(sender,proposal.instanceNo,true, proposal.roundNo, Set.of());
     }
 
-    public static LatticeVote negativeVoteFromProposal(LatticeProposal proposal, int sender){
-        return new LatticeVote(sender, proposal.instanceNo,false, proposal.roundNo, proposal.proposedSet);
+    public static LatticeVote negativeVoteFromProposal(LatticeProposal proposal, int sender, Set<Integer> missingValues){
+        return new LatticeVote(sender, proposal.instanceNo,false, proposal.roundNo, missingValues);
     }
 
 
