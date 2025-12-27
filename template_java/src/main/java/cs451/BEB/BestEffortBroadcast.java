@@ -25,6 +25,11 @@ public class BestEffortBroadcast implements PLCallback {
 
     public void sendToTarget(Object payload, int targetNo) throws InterruptedException {
         System.out.println("Pl sending vote");
+
+        if(targetNo == selfId){
+           bebCallback.onDeliver(payload);
+        }
+
         pl.sendMessage(payload,selfId,targetNo);
     }
 
