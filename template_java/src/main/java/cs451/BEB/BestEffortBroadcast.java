@@ -28,6 +28,7 @@ public class BestEffortBroadcast implements PLCallback {
 
         if(targetNo == selfId){
            bebCallback.onDeliver(payload);
+           return;
         }
 
         pl.sendMessage(payload,selfId,targetNo);
