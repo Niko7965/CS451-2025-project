@@ -32,8 +32,6 @@ public class PerfectLink implements PLCallback, AckCallBack {
     public void sendMessage(Object payload, int sender, int receiver) throws  InterruptedException {
         int messageNo = stubbornLinkSender.getNextMessageNoForTarget(receiver);
         PLMessageRegular message = new PLMessageRegular(sender,receiver,messageNo,payload);
-
-
         stubbornLinkSender.sendMessage(message);
     }
 

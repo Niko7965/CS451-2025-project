@@ -25,10 +25,12 @@ public class BestEffortBroadcast implements PLCallback {
 
     public void sendToTarget(Object payload, int targetNo) throws InterruptedException {
 
-        if(targetNo == selfId){
-           bebCallback.onDeliver(payload);
-           return;
-        }
+        //todo
+
+//        if(targetNo == selfId){
+//           bebCallback.onDeliver(payload);
+//           return;
+//        }
 
         pl.sendMessage(payload,selfId,targetNo);
     }

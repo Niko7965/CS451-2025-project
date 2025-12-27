@@ -114,7 +114,6 @@ public class LatticeAgreements extends Thread implements BebCallback{
         }
         if(o instanceof LatticeProposal){
 
-
             try {
                 sendVoteForProposal((LatticeProposal) o);
             } catch (InterruptedException e) {
