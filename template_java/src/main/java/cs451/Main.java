@@ -92,7 +92,7 @@ public class Main {
             latticeAgreements.propose(i, proposalSet);
             Set<Integer> decisionSet =  callback.getDecision(i);
 
-            if(GlobalCfg.LA_DBG || GlobalCfg.LA_SPARSE_DBG){
+            if(GlobalCfg.LA_DBG || GlobalCfg.LA_SPARSE_DBG || GlobalCfg.MAIN_OUT_DEBUG){
                 System.out.println("Decided on set for instance "+i+":");
             }
 

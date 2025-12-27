@@ -55,7 +55,7 @@ public class LatticeAgreement {
     }
 
     public void takeVote(LatticeVote vote){
-        if(vote.instanceNo != this.instanceNo || vote.roundNumber != this.roundNo){
+        if(vote.instanceNo != this.instanceNo || vote.roundNumber != this.roundNo || !active){
             return;
         }
 
@@ -63,9 +63,6 @@ public class LatticeAgreement {
             System.out.println(vote);
         }
 
-        if(!active){
-            System.out.println("ERROR - SOMEHOW GOT VOTE WHILE INACTIVE "+ instanceNo);
-        }
 
         if(vote.isAck){
             ackCount++;
