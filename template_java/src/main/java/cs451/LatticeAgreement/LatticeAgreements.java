@@ -107,6 +107,9 @@ public class LatticeAgreements extends Thread implements BebCallback{
     public void onDeliver(Object o) {
 
         if(o instanceof LatticeVote){
+            System.out.println("received vote: "+((LatticeVote) o).sender );
+
+
             giveVote((LatticeVote) o);
             return;
         }
