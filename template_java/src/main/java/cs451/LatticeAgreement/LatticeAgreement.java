@@ -59,6 +59,10 @@ public class LatticeAgreement {
             return;
         }
 
+        if(GlobalCfg.LA_DBG){
+            System.out.println(vote);
+        }
+
         if(!active){
             System.out.println("ERROR - SOMEHOW GOT VOTE WHILE INACTIVE "+ instanceNo);
         }
