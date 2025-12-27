@@ -59,6 +59,10 @@ public class LatticeAgreement {
             return;
         }
 
+        if(!active){
+            System.out.println("ERROR - SOMEHOW GOT VOTE WHILE INACTIVE "+ instanceNo);
+        }
+
         if(vote.isAck){
             ackCount++;
             if(GlobalCfg.LA_VOTE_DBG) {
@@ -67,7 +71,7 @@ public class LatticeAgreement {
         }
         else {
             nackCount++;
-            proposedSet.addAll(vote.proposedSet);
+            this.proposedSet.addAll(vote.proposedSet);
             if(GlobalCfg.LA_DBG) {
                 System.out.println("Nacked, new set:");
                 Main.printSet(vote.proposedSet);
