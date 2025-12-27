@@ -118,6 +118,7 @@ public class LatticeAgreements extends Thread implements BebCallback{
 
 
             try {
+                System.out.println("Sending vote");
                 sendVoteForProposal((LatticeProposal) o);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
