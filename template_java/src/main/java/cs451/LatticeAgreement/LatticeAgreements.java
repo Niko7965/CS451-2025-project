@@ -111,6 +111,9 @@ public class LatticeAgreements extends Thread implements BebCallback{
             return;
         }
         if(o instanceof LatticeProposal){
+            System.out.println("received proposal: "+((LatticeProposal) o).senderId );
+
+
             try {
                 sendVoteForProposal((LatticeProposal) o);
             } catch (InterruptedException e) {
