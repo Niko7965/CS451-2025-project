@@ -19,14 +19,14 @@ public class LatticeAgreement {
 
 
 
-    public LatticeAgreement(int instanceNo){
+    public LatticeAgreement(int instanceNo,int selfId){
         this.instanceNo = instanceNo;
         this.active = false;
         this.ackCount = 0;
         this.nackCount = 0;
         this.roundNo = 0;
         this.proposedSet = Set.of();
-        this.voter = new LatticeVoter(instanceNo);
+        this.voter = new LatticeVoter(instanceNo,selfId);
     }
 
     //Should only be called once

@@ -72,7 +72,7 @@ public class LatticeAgreements extends Thread implements BebCallback{
             if (agreementForInstanceNo.containsKey(instanceNo)) {
                 return agreementForInstanceNo.get(instanceNo);
             }
-            LatticeAgreement newAgreement = new LatticeAgreement(instanceNo);
+            LatticeAgreement newAgreement = new LatticeAgreement(instanceNo,senderId);
             agreementForInstanceNo.put(instanceNo, newAgreement);
             return newAgreement;
         }

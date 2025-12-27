@@ -7,10 +7,12 @@ import java.util.Set;
 
 public class LatticeVoter {
     int instanceNo;
+    int selfId;
     Set<Integer> acceptedValue;
 
-    public LatticeVoter(int instanceNo){
+    public LatticeVoter(int instanceNo, int selfId){
         this.instanceNo = instanceNo;
+        this.selfId = selfId;
         this.acceptedValue = Set.of();
     }
 
@@ -31,14 +33,14 @@ public class LatticeVoter {
             }
 
             acceptedValue = proposalSet;
-            return LatticeVote.positiveVoteFromProposal(proposal);
+            return LatticeVote.positiveVoteFromProposal(proposal,selfId);
         } else {
             if(GlobalCfg.LA_VOTE_DBG){
                 System.out.println("Voted no");
             }
 
             acceptedValue.addAll(proposalSet);
-            return LatticeVote.negativeVoteFromProposal(proposal);
+            return LatticeVote.negativeVoteFromProposal(proposal,selfId);
         }
     }
 
