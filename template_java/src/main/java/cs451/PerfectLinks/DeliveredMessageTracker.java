@@ -19,7 +19,7 @@ public class DeliveredMessageTracker {
         int messageNo = m.getMetadata().getMessageNo();
 
         if(!messageNoForSender.containsKey(sender)){
-            messageNoForSender.put(sender,-1);
+            messageNoForSender.put(sender,0);
             return true;
         }
 
