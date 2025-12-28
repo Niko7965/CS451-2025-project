@@ -85,10 +85,7 @@ public class Main {
 
         int noOfAgreements = laCfgParser.getNoOfProposals();
 
-        //doLatticeTask(noOfAgreements, parser, laCfgParser);
-
-        doPLTest(parser);
-
+        doLatticeTask(noOfAgreements, parser, laCfgParser);
 
         // After a process finishes broadcasting,
         // it waits forever for the delivery of messages.
