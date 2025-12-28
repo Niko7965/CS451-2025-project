@@ -108,63 +108,69 @@ public class StubbornLinkSender extends Thread{
             //Thread.sleep(10);
 
 
-            //Send messages that have not yet been acked
-            synchronized (toSend) {
+            sendMessages();
 
-                for(TargetQueue t : toSend.values()){
-                    Optional<PLMessageRegular> mOpt = t.getCurrent();
-                    if(mOpt.isEmpty()){
-                        continue;
-                    }
-                    PLMessageRegular m = mOpt.get();
-
-                    DatagramPacket p = makePacketForReg(m);
-                    synchronized (socket) {
-                        if(GlobalCfg.STUBBORN_SEND_DEBUG) {
-                            System.out.println("Stubborn sending " + m);
-                        }
-                        socket.send(p);
-                    }
-                }
+            sendAcks();
 
 
-            }
-
-            //Send acks for messages received
-            synchronized (toAck){
-                for (PLAckMessage m : toAck){
-                    if(GlobalCfg.PL_ACK_DEBUG) {
-                        System.out.println("Acking: " + m.getMetadata().getMessageNo() +" from: "+m.getMetadata().getSenderId());
-                    }
-                    DatagramPacket p = makePacketForAck(m);
-                    synchronized (socket){
-                        socket.send(p);
-                    }
-                }
-                toAck.clear();
-            }
-
-
-            //Handle received acks
-            synchronized (messagesThatHaveBeenAckedByOther){
-                synchronized (toSend){
-                    for(PLAckMessage m: messagesThatHaveBeenAckedByOther){
-                        int target = m.getMetadataForAckedMessage().getReceiverId();
-                        if(!toSend.containsKey(target)){
-                            System.out.println("ERROR - ACK FROM UNKNOWN HOST");
-                            return;
-                        }
-                        toSend.get(target).tryAck(m);
-                    }
-                }
-            }
-
+            handleReceivedAcks();
 
 
         }
     }
 
+    private void handleReceivedAcks() {
+        //Handle received acks
+        synchronized (messagesThatHaveBeenAckedByOther){
+            synchronized (toSend){
+                for(PLAckMessage m: messagesThatHaveBeenAckedByOther){
+                    int target = m.getMetadataForAckedMessage().getReceiverId();
+                    if(!toSend.containsKey(target)){
+                        System.out.println("ERROR - ACK FROM UNKNOWN HOST");
+                    }
+                    toSend.get(target).tryAck(m);
+                }
+            }
+        }
+    }
 
+    private void sendAcks() throws IOException {
+        //Send acks for messages received
+        synchronized (toAck){
+            for (PLAckMessage m : toAck){
+                if(GlobalCfg.PL_ACK_DEBUG) {
+                    System.out.println("Acking: " + m.getMetadata().getMessageNo() +" from: "+m.getMetadata().getSenderId());
+                }
+                DatagramPacket p = makePacketForAck(m);
+                synchronized (socket){
+                    socket.send(p);
+                }
+            }
+            toAck.clear();
+        }
+    }
+
+    private void sendMessages() throws IOException {
+        //Send messages that have not yet been acked
+        synchronized (toSend) {
+
+            for(TargetQueue t : toSend.values()){
+                Optional<PLMessageRegular> mOpt = t.getCurrent();
+                if(mOpt.isEmpty()){
+                    continue;
+                }
+                PLMessageRegular m = mOpt.get();
+
+                DatagramPacket p = makePacketForReg(m);
+                synchronized (socket) {
+                    if(GlobalCfg.STUBBORN_SEND_DEBUG) {
+                        System.out.println("Stubborn sending " + m);
+                    }
+                    socket.send(p);
+                }
+            }
+        }
+    }
 
 
     private DatagramPacket makePacketForAck(PLAckMessage ackMessage) throws IOException {

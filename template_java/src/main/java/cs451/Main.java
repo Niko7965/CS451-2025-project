@@ -4,9 +4,12 @@ package cs451;
 import cs451.LatticeAgreement.LACfgParser;
 import cs451.LatticeAgreement.LatticeAgreements;
 import cs451.LatticeAgreement.LatticeCallBackSleeper;
+import cs451.PerfectLinks.PerfectLink;
 import cs451.URB.UniformReliableBroadcast;
 
 import java.io.IOException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -74,18 +77,51 @@ public class Main {
         System.out.println("Start links");
 
         outputWriter = new OutputWriter(parser.output());
+        Phonebook.init(parser.hosts());
+
 
 
         LACfgParser laCfgParser = new LACfgParser(parser.config());
 
         int noOfAgreements = laCfgParser.getNoOfProposals();
 
-        Phonebook.init(parser.hosts());
+        //doLatticeTask(noOfAgreements, parser, laCfgParser);
+
+        doPLTest(parser);
+
+
+        // After a process finishes broadcasting,
+        // it waits forever for the delivery of messages.
+        while (true) {
+            // Sleep for 1 hour
+            Thread.sleep(60 * 60 * 1000);
+        }
+
+    }
+
+    private static void doPLTest(Parser parser) throws SocketException, UnknownHostException, InterruptedException {
+
+        Host selfHost = parser.hosts().stream().filter(h -> h.getId() == parser.myId()).findFirst().get();
+        PLTestCallback tcb = new PLTestCallback();
+        PerfectLink pl = new PerfectLink(selfHost,tcb);
+
+        int otherTarget = 1;
+        if(selfHost.getId() == 1){
+            otherTarget = 2;
+        }
+
+        for(int i = 0; i<10; i++){
+            pl.sendMessage(i,selfHost.getId(),otherTarget);
+        }
+    }
+
+    private static void doLatticeTask(int noOfAgreements, Parser parser, LACfgParser laCfgParser) throws SocketException, UnknownHostException, InterruptedException {
         LatticeCallBackSleeper callback = new LatticeCallBackSleeper(noOfAgreements);
         LatticeAgreements latticeAgreements = new LatticeAgreements(parser.myId(), parser.hosts().size(), Phonebook.hostFromId(parser.myId()), callback);
         latticeAgreements.start();
 
-        System.out.println("my id: "+parser.myId());
+        System.out.println("my id: "+ parser.myId());
+
 
         for (int i = 0; i < noOfAgreements; i++) {
             Set<Integer> proposalSet = laCfgParser.getNextProposalSet();
@@ -98,15 +134,6 @@ public class Main {
 
             printSet(decisionSet);
         }
-
-
-        // After a process finishes broadcasting,
-        // it waits forever for the delivery of messages.
-        while (true) {
-            // Sleep for 1 hour
-            Thread.sleep(60 * 60 * 1000);
-        }
-
     }
 
     public static void printSet(Set<Integer> set){
