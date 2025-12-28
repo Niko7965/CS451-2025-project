@@ -13,4 +13,5 @@ public class GlobalCfg {
     public static final boolean LA_VOTE_DBG = false;
     public static final boolean LA_SPARSE_DBG = true;
     public static final boolean MAIN_OUT_DEBUG = true;
+    public static final boolean PL_DEBUG = true;
 }

@@ -47,6 +47,18 @@ public class StubbornLinkListener extends Thread {
 
 
             PLMessage message = PLMessage.fromBytes(packet.getData());
+
+            //todo - this is a really scuffed workaround
+            if(message.getPayload() instanceof String){
+                String messagePayload = (String) message.getPayload();
+                if(messagePayload.equals("FLUSH")){
+                    if(GlobalCfg.PL_DEBUG){
+                        System.out.println("Heard a dummy-flush message");
+                    }
+                    return;
+                }
+            }
+
             if(GlobalCfg.PL_ACK_DEBUG){
                 System.out.println("stubborn heard message "+message);
             }
