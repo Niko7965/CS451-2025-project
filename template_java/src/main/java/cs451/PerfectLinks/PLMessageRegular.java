@@ -58,6 +58,6 @@ public class PLMessageRegular extends PLMessage {
 
     @Override
     public String toString(){
-        return "PLMessage | Target: "+metadata.getReceiverId()+" Payload: "+payload;
+        return "PLMessage | Target: "+metadata.getReceiverId()+" Payload: "+payload+" MessageNo: "+metadata.getMessageNo();
     }
 }
