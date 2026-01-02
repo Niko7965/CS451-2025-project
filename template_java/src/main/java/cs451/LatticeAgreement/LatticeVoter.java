@@ -31,17 +31,15 @@ public class LatticeVoter {
             if(GlobalCfg.LA_VOTE_DBG){
                 System.out.println("Voted yes");
             }
-
-            acceptedValue = proposalSet;
+            this.acceptedValue = new ImmutableSet(proposalSet.getInner());
             return LatticeVote.positiveVoteFromProposal(proposal,selfId);
+
+
         } else {
             if(GlobalCfg.LA_VOTE_DBG){
                 System.out.println("Voted no");
             }
-
             acceptedValue = acceptedValue.addAll(proposalSet.getInner());
-
-
             return LatticeVote.negativeVoteFromProposal(proposal,selfId,acceptedValue.getInner());
         }
     }
