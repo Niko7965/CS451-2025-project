@@ -35,11 +35,13 @@ public class InstanceLocker implements LatticeCallback {
     }
 
     public void propose(int instance, Set<Integer> proposalSet) throws InterruptedException {
-        while (noOfActiveInstances > maxNoOfActiveInstances){
-            proposeLock.wait();
+        synchronized (proposeLock) {
+            while (noOfActiveInstances > maxNoOfActiveInstances) {
+                proposeLock.wait();
+            }
+            LA.propose(instance, proposalSet);
+            noOfActiveInstances++;
         }
-        LA.propose(instance,proposalSet);
-        noOfActiveInstances++;
     }
 
     public void tryDeliverFromQueue() throws IOException {
