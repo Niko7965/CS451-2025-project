@@ -14,4 +14,5 @@ public class GlobalCfg {
     public static final boolean LA_SPARSE_DBG = false;
     public static final boolean MAIN_OUT_DEBUG = true;
     public static final boolean PL_DEBUG = false;
+    public static final boolean LOCKER_DEBUG = true;
 }

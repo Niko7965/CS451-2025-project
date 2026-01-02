@@ -73,6 +73,10 @@ public class InstanceLocker implements LatticeCallback {
     public void onDeliver(LatticeDecision decision) {
         synchronized (decideLock) {
 
+            if(GlobalCfg.LOCKER_DEBUG){
+                System.out.println("Got a decision to queue");
+            }
+
             decisionQueue.add(decision);
 
             try {
