@@ -51,8 +51,6 @@ public class LatticeAgreements extends Thread implements BebCallback{
         while(true){
             //maybe on timer
             synchronized (agreementForInstanceNo){
-
-
                 for(LatticeAgreement a: agreementForInstanceNo.values()){
                     Optional<Set<Integer>> deliverableSetOption =  a.getDeliverableSet(noOfProcesses);
                     if(deliverableSetOption.isPresent()){
