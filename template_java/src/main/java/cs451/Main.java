@@ -129,7 +129,7 @@ public class Main {
                 System.out.println("Decided on set for instance "+i+":");
 
             }
-            outputWriter.write(setToString(decisionSet));
+            outputWriter.write(setToString(decisionSet)+"\n");
             printSet(decisionSet);
 
 
