@@ -18,8 +18,8 @@ public class PLMessageRegular extends PLMessage {
         this.payload = payload;
     }
 
-    public Cloneable getPayload(){
-        return (Cloneable) payload;
+    public Object getPayload(){
+        return payload;
     }
 
     public PLMessageMetadata getMetadata(){
