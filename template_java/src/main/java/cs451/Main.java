@@ -1,6 +1,7 @@
 package cs451;
 
 
+import cs451.LatticeAgreement.InstanceLocker;
 import cs451.LatticeAgreement.LACfgParser;
 import cs451.LatticeAgreement.LatticeAgreements;
 import cs451.LatticeAgreement.LatticeCallBackSleeper;
@@ -117,22 +118,15 @@ public class Main {
         LatticeAgreements latticeAgreements = new LatticeAgreements(parser.myId(), parser.hosts().size(), Phonebook.hostFromId(parser.myId()), callback);
         latticeAgreements.start();
 
+        InstanceLocker locker = new InstanceLocker(latticeAgreements,outputWriter);
+
         System.out.println("my id: "+ parser.myId());
 
 
         for (int i = 0; i < noOfAgreements; i++) {
             Set<Integer> proposalSet = laCfgParser.getNextProposalSet();
-            latticeAgreements.propose(i, proposalSet);
-            Set<Integer> decisionSet =  callback.getDecision(i);
 
-            if(GlobalCfg.LA_DBG || GlobalCfg.LA_SPARSE_DBG || GlobalCfg.MAIN_OUT_DEBUG){
-                System.out.println("Decided on set for instance "+i+":");
-
-            }
-            outputWriter.write(setToString(decisionSet)+"\n");
-            printSet(decisionSet);
-
-
+            locker.propose(i,proposalSet);
         }
     }
 
