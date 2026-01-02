@@ -54,6 +54,7 @@ public class LatticeAgreements extends Thread implements BebCallback{
                 for(LatticeAgreement a: agreementForInstanceNo.values()){
                     Optional<Set<Integer>> deliverableSetOption =  a.getDeliverableSet(noOfProcesses);
                     if(deliverableSetOption.isPresent()){
+                        System.out.println("Got it 2");
                         LatticeDecision decision = new LatticeDecision(a.getInstanceNo(),deliverableSetOption.get());
                         latticeCallback.onDeliver(decision);
                         //todo deliver; maybe remove from list

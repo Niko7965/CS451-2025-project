@@ -114,11 +114,14 @@ public class Main {
     }
 
     private static void doLatticeTask(int noOfAgreements, Parser parser, LACfgParser laCfgParser) throws IOException, InterruptedException {
-        LatticeCallBackSleeper callback = new LatticeCallBackSleeper(noOfAgreements);
-        LatticeAgreements latticeAgreements = new LatticeAgreements(parser.myId(), parser.hosts().size(), Phonebook.hostFromId(parser.myId()), callback);
+        //LatticeCallBackSleeper callback = new LatticeCallBackSleeper(noOfAgreements);
+        InstanceLocker locker = new InstanceLocker(outputWriter);
+        LatticeAgreements latticeAgreements = new LatticeAgreements(parser.myId(), parser.hosts().size(), Phonebook.hostFromId(parser.myId()), locker);
+        locker.giveLA(latticeAgreements);
+
         latticeAgreements.start();
 
-        InstanceLocker locker = new InstanceLocker(latticeAgreements,outputWriter);
+
 
         System.out.println("my id: "+ parser.myId());
 

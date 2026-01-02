@@ -10,7 +10,7 @@ import java.util.Set;
 import static cs451.Main.*;
 
 public class InstanceLocker implements LatticeCallback {
-    private final LatticeAgreements LA;
+    private LatticeAgreements LA;
     private int noOfActiveInstances;
     private int nextInstanceNoToDeliver;
     private final Object proposeLock;
@@ -24,14 +24,18 @@ public class InstanceLocker implements LatticeCallback {
     public static final int maxNoOfActiveInstances = 1;
 
 
-    public InstanceLocker(LatticeAgreements LA, OutputWriter outputWriter){
-        this.LA = LA;
+    public InstanceLocker(OutputWriter outputWriter){
         this.proposeLock = new Object();
         this.decideLock = new Object();
         this.noOfActiveInstances = 0;
         this.nextInstanceNoToDeliver = 0;
         this.decisionQueue = new ArrayList<>();
         this.outputWriter = outputWriter;
+    }
+
+    public void giveLA(LatticeAgreements LA){
+        this.LA = LA;
+
     }
 
     public void propose(int instance, Set<Integer> proposalSet) throws InterruptedException {
