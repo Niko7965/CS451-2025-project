@@ -112,7 +112,7 @@ public class Main {
         }
     }
 
-    private static void doLatticeTask(int noOfAgreements, Parser parser, LACfgParser laCfgParser) throws SocketException, UnknownHostException, InterruptedException {
+    private static void doLatticeTask(int noOfAgreements, Parser parser, LACfgParser laCfgParser) throws IOException, InterruptedException {
         LatticeCallBackSleeper callback = new LatticeCallBackSleeper(noOfAgreements);
         LatticeAgreements latticeAgreements = new LatticeAgreements(parser.myId(), parser.hosts().size(), Phonebook.hostFromId(parser.myId()), callback);
         latticeAgreements.start();
@@ -127,21 +127,27 @@ public class Main {
 
             if(GlobalCfg.LA_DBG || GlobalCfg.LA_SPARSE_DBG || GlobalCfg.MAIN_OUT_DEBUG){
                 System.out.println("Decided on set for instance "+i+":");
-            }
 
+            }
+            outputWriter.write(setToString(decisionSet));
             printSet(decisionSet);
+
+
         }
     }
 
-    public static void printSet(Set<Integer> set){
+    public static String setToString(Set<Integer> set){
+        StringBuilder s = new StringBuilder();
         ArrayList<Integer> setList = new ArrayList<>(set);
         setList.sort(Integer::compare);
         for(Integer i : setList){
-            //todo: if error, maybe the extra space
-            //todo: also need to actually write to outputfile
-            System.out.print(i+" ");
+            s.append(i).append(" ");
         }
-        System.out.println();
+        return s.toString();
+    }
+
+    public static void printSet(Set<Integer> set){
+        System.out.println(setToString(set));
     }
 
 
