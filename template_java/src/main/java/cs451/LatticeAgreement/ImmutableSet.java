@@ -1,5 +1,7 @@
 package cs451.LatticeAgreement;
 
+import cs451.Main;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -16,6 +18,13 @@ public class ImmutableSet implements Serializable {
     public ImmutableSet(Collection<Integer> collection){
         this.inner = new HashSet<>();
         inner.addAll(collection);
+        System.out.println("inner:");
+        Main.printSet(inner);
+
+        System.out.println("given:");
+        for(Integer i :collection){
+            System.out.print(i+"");
+        }
     }
 
     public Set<Integer> getInner(){
