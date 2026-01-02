@@ -72,7 +72,7 @@ public class LatticeAgreement {
         }
         else {
             nackCount++;
-            this.proposedSet.addAll(vote.proposedSet.getInner());
+            this.proposedSet = this.proposedSet.addAll(vote.proposedSet.getInner());
             if(GlobalCfg.LA_DBG) {
                 System.out.println("Nacked, new set:");
                 Main.printSet(vote.proposedSet.getInner());
