@@ -84,7 +84,6 @@ public class LatticeAgreement {
 
     public Optional<Set<Integer>> getDeliverableSet(int noOfProcesses){
         if(active && ackCount > noOfProcesses / 2){
-            System.out.println("Got it");
             active = false;
             return Optional.of(proposedSet.getInner());
         }
