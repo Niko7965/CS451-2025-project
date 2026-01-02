@@ -39,7 +39,7 @@ public class LatticeVoter {
             if(GlobalCfg.LA_VOTE_DBG){
                 System.out.println("Voted no");
             }
-            acceptedValue = acceptedValue.addAll(proposalSet.getInner());
+            this.acceptedValue = acceptedValue.addAll(proposalSet.getInner());
             return LatticeVote.negativeVoteFromProposal(proposal,selfId,acceptedValue.getInner());
         }
     }

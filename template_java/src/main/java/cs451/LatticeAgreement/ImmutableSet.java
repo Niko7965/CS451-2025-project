@@ -23,9 +23,9 @@ public class ImmutableSet implements Serializable {
     }
 
     public ImmutableSet addAll(Collection<Integer> collection){
-        Set<Integer> inner = new HashSet<>();
-        inner.addAll(this.inner);
-        inner.addAll(collection);
-        return new ImmutableSet(inner);
+        Set<Integer> newInner = new HashSet<>();
+        newInner.addAll(this.inner);
+        newInner.addAll(collection);
+        return new ImmutableSet(newInner);
     }
 }
