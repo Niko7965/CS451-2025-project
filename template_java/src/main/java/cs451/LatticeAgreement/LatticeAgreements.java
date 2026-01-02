@@ -51,17 +51,22 @@ public class LatticeAgreements extends Thread implements BebCallback{
         while(true){
             //maybe on timer
             synchronized (agreementForInstanceNo){
+
+
                 for(LatticeAgreement a: agreementForInstanceNo.values()){
                     Optional<Set<Integer>> deliverableSetOption =  a.getDeliverableSet(noOfProcesses);
                     if(deliverableSetOption.isPresent()){
                         LatticeDecision decision = new LatticeDecision(a.getInstanceNo(),deliverableSetOption.get());
                         latticeCallback.onDeliver(decision);
                         //todo deliver; maybe remove from list
+                        //todo Actually, can only do this if enough votes have been sent as well
                     }
                     else {
                         a.reBroadcastIfNackedAndSufficientlyVoted(noOfProcesses);
                     }
                 }
+
+
             }
         }
     }
@@ -107,8 +112,6 @@ public class LatticeAgreements extends Thread implements BebCallback{
     public void onDeliver(Object o) {
 
         if(o instanceof LatticeVote){
-
-
             giveVote((LatticeVote) o);
             return;
         }

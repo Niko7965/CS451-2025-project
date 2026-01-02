@@ -4,31 +4,30 @@ import cs451.GlobalCfg;
 import cs451.Main;
 
 
-import java.util.Set;
 
 public class LatticeVoter {
     int instanceNo;
     int selfId;
-    Set<Integer> acceptedValue;
+    ImmutableSet acceptedValue;
 
     public LatticeVoter(int instanceNo, int selfId){
         this.instanceNo = instanceNo;
         this.selfId = selfId;
-        this.acceptedValue = Set.of();
+        this.acceptedValue = new ImmutableSet();
     }
 
     private LatticeVote getVoteForProposal(LatticeProposal proposal) {
-        Set<Integer> proposalSet = proposal.proposedSet;
+        ImmutableSet proposalSet = proposal.proposedSet;
 
         if(GlobalCfg.LA_VOTE_DBG){
             System.out.println("Voting for instance no "+instanceNo+":");
             System.out.println("Proposal:");
-            Main.printSet(proposalSet);
+            Main.printSet(proposalSet.getInner());
             System.out.println("Current:");
-            Main.printSet(this.acceptedValue);
+            Main.printSet(this.acceptedValue.getInner());
         }
 
-        if (proposalSet.containsAll(acceptedValue)) {
+        if (proposalSet.getInner().containsAll(acceptedValue.getInner())) {
             if(GlobalCfg.LA_VOTE_DBG){
                 System.out.println("Voted yes");
             }
@@ -40,11 +39,10 @@ public class LatticeVoter {
                 System.out.println("Voted no");
             }
 
-            acceptedValue.addAll(proposalSet);
+            acceptedValue = acceptedValue.addAll(proposalSet.getInner());
 
-            Set<Integer> acceptedValueClone = Set.copyOf(acceptedValue);
 
-            return LatticeVote.negativeVoteFromProposal(proposal,selfId,acceptedValueClone);
+            return LatticeVote.negativeVoteFromProposal(proposal,selfId,acceptedValue.getInner());
         }
     }
 

@@ -6,13 +6,13 @@ import java.util.Set;
 public class LatticeProposal implements Serializable {
 
     int instanceNo;
-    Set<Integer> proposedSet;
+    ImmutableSet proposedSet;
     int roundNo;
     int senderId;
 
     public LatticeProposal(int instanceNo, Set<Integer> proposedSet, int roundNo, int senderId){
         this.instanceNo = instanceNo;
-        this.proposedSet = proposedSet;
+        this.proposedSet = new ImmutableSet(proposedSet);
         this.roundNo = roundNo;
         this.senderId = senderId;
     }

@@ -8,18 +8,18 @@ public class PLMessageRegular extends PLMessage {
     private final Object payload;
 
 
-    public PLMessageRegular(int sender, int receiver, int messageNo, Object payload){
+    public PLMessageRegular(int sender, int receiver, int messageNo, Cloneable payload){
         this.metadata = new PLMessageMetadata(false,messageNo,sender,receiver);
         this.payload = payload;
     }
 
-    public PLMessageRegular(PLMessageMetadata metadata,Object payload){
+    public PLMessageRegular(PLMessageMetadata metadata, Cloneable payload){
         this.metadata = metadata;
         this.payload = payload;
     }
 
-    public Object getPayload(){
-        return payload;
+    public Cloneable getPayload(){
+        return (Cloneable) payload;
     }
 
     public PLMessageMetadata getMetadata(){

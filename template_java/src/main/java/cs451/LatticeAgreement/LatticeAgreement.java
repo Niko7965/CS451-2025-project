@@ -15,7 +15,7 @@ public class LatticeAgreement {
     private int ackCount;
     private int nackCount;
     private int roundNo;
-    private Set<Integer> proposedSet;
+    private ImmutableSet proposedSet;
 
 
 
@@ -25,13 +25,13 @@ public class LatticeAgreement {
         this.ackCount = 0;
         this.nackCount = 0;
         this.roundNo = 0;
-        this.proposedSet = Set.of();
+        this.proposedSet = new ImmutableSet();
         this.voter = new LatticeVoter(instanceNo,selfId);
     }
 
     //Should only be called once
     public void propose(Set<Integer> proposal) throws InterruptedException {
-        proposedSet = proposal;
+        proposedSet = new ImmutableSet(proposal);
         active = true;
         roundNo++;
         ackCount = 0;
@@ -42,7 +42,7 @@ public class LatticeAgreement {
             Main.printSet(proposal);
         }
 
-        LatticeProposal proposalMessage = new LatticeProposal(instanceNo,proposedSet, roundNo, LatticeAgreements.getSenderId());
+        LatticeProposal proposalMessage = new LatticeProposal(instanceNo,proposedSet.getInner(), roundNo, LatticeAgreements.getSenderId());
         LatticeAgreements.getBeb().broadcast(proposalMessage);
     }
 
@@ -72,11 +72,11 @@ public class LatticeAgreement {
         }
         else {
             nackCount++;
-            this.proposedSet.addAll(vote.proposedSet);
+            this.proposedSet.addAll(vote.proposedSet.getInner());
             if(GlobalCfg.LA_DBG) {
                 System.out.println("Nacked, new set:");
-                Main.printSet(vote.proposedSet);
-                Main.printSet(proposedSet);
+                Main.printSet(vote.proposedSet.getInner());
+                Main.printSet(proposedSet.getInner());
             }
 
         }
@@ -85,7 +85,7 @@ public class LatticeAgreement {
     public Optional<Set<Integer>> getDeliverableSet(int noOfProcesses){
         if(active && ackCount > noOfProcesses / 2){
             active = false;
-            return Optional.of(proposedSet);
+            return Optional.of(proposedSet.getInner());
         }
         return Optional.empty();
     }
@@ -100,7 +100,7 @@ public class LatticeAgreement {
                 System.out.println("rebroadcasting, round:" + roundNo);
             }
 
-            LatticeProposal proposalMessage = new LatticeProposal(instanceNo, proposedSet, roundNo, LatticeAgreements.getSenderId());
+            LatticeProposal proposalMessage = new LatticeProposal(instanceNo, proposedSet.getInner(), roundNo, LatticeAgreements.getSenderId());
             LatticeAgreements.getBeb().broadcast(proposalMessage);
         }
     }

@@ -3,13 +3,13 @@ package cs451.LatticeAgreement;
 import java.io.Serializable;
 import java.util.Set;
 
-public class LatticeVote implements Serializable {
+public class LatticeVote implements Serializable{
 
     int sender;
     int instanceNo;
     boolean isAck;
     int roundNumber;
-    Set<Integer> proposedSet; //note is empty if isAck
+    ImmutableSet proposedSet; //note is empty if isAck
 
 
     public LatticeVote(int sender, int instanceNo, boolean isAck, int roundNumber, Set<Integer> proposedSet){
@@ -17,7 +17,7 @@ public class LatticeVote implements Serializable {
         this.instanceNo = instanceNo;
         this.isAck = isAck;
         this.roundNumber = roundNumber;
-        this.proposedSet = proposedSet;
+        this.proposedSet = new ImmutableSet(proposedSet);
     }
 
     public static LatticeVote positiveVoteFromProposal(LatticeProposal proposal, int sender){
@@ -32,5 +32,6 @@ public class LatticeVote implements Serializable {
     public String toString(){
         return ("LVote - i = "+instanceNo+ "isAck = "+isAck + " Sender:"+sender);
     }
+
 
 }

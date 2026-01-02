@@ -125,7 +125,6 @@ public class Main {
 
         for (int i = 0; i < noOfAgreements; i++) {
             Set<Integer> proposalSet = laCfgParser.getNextProposalSet();
-
             locker.propose(i,proposalSet);
         }
     }
