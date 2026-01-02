@@ -14,7 +14,6 @@ public class InstanceLocker implements LatticeCallback {
     private int noOfActiveInstances;
     private int nextInstanceNoToDeliver;
     private final Object proposeLock;
-    private final Object decideLock;
     private final ArrayList<LatticeDecision> decisionQueue; //todo priority queue
     private final OutputWriter outputWriter;
 
@@ -26,7 +25,6 @@ public class InstanceLocker implements LatticeCallback {
 
     public InstanceLocker(OutputWriter outputWriter){
         this.proposeLock = new Object();
-        this.decideLock = new Object();
         this.noOfActiveInstances = 0;
         this.nextInstanceNoToDeliver = 0;
         this.decisionQueue = new ArrayList<>();
@@ -75,7 +73,7 @@ public class InstanceLocker implements LatticeCallback {
 
     @Override
     public void onDeliver(LatticeDecision decision) {
-        synchronized (decideLock) {
+        synchronized (proposeLock) {
 
             if(GlobalCfg.LOCKER_DEBUG){
                 System.out.println("Got a decision to queue");
