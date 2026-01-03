@@ -20,7 +20,7 @@ public class InstanceLocker implements LatticeCallback {
 
 
     //todo change
-    public static final int maxNoOfActiveInstances = 1;
+    public static final int maxNoOfActiveInstances = 5;
 
 
     public InstanceLocker(OutputWriter outputWriter){
