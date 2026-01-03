@@ -50,9 +50,7 @@ public class InstanceLocker implements LatticeCallback {
 
     public void tryDeliverFromQueue() throws IOException {
         while (!decisionQueue.isEmpty() && decisionQueue.peek().instanceNo == nextInstanceNoToDeliver){
-            LatticeDecision toDeliver = decisionQueue.stream().
-                    filter(d -> d.instanceNo == nextInstanceNoToDeliver)
-                    .findFirst().get();
+            LatticeDecision toDeliver = decisionQueue.poll();
             deliver(toDeliver);
             nextInstanceNoToDeliver++;
             noOfActiveInstances--;
