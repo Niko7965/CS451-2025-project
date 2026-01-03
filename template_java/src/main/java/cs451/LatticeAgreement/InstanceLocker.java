@@ -5,6 +5,8 @@ import cs451.OutputWriter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 import static cs451.Main.*;
@@ -14,7 +16,7 @@ public class InstanceLocker implements LatticeCallback {
     private int noOfActiveInstances;
     private int nextInstanceNoToDeliver;
     private final Object proposeLock;
-    private final ArrayList<LatticeDecision> decisionQueue; //todo priority queue
+    private final PriorityQueue<LatticeDecision> decisionQueue;
     private final OutputWriter outputWriter;
 
 
@@ -27,7 +29,7 @@ public class InstanceLocker implements LatticeCallback {
         this.proposeLock = new Object();
         this.noOfActiveInstances = 0;
         this.nextInstanceNoToDeliver = 0;
-        this.decisionQueue = new ArrayList<>();
+        this.decisionQueue = new PriorityQueue<>(Comparator.comparingInt(ld -> ld.instanceNo));
         this.outputWriter = outputWriter;
     }
 
@@ -47,17 +49,23 @@ public class InstanceLocker implements LatticeCallback {
     }
 
     public void tryDeliverFromQueue() throws IOException {
-        while(decisionQueue.stream().anyMatch(d -> d.instanceNo == nextInstanceNoToDeliver)){
+        while (!decisionQueue.isEmpty() && decisionQueue.peek().instanceNo == nextInstanceNoToDeliver){
             LatticeDecision toDeliver = decisionQueue.stream().
                     filter(d -> d.instanceNo == nextInstanceNoToDeliver)
-                            .findFirst().get();
+                    .findFirst().get();
             deliver(toDeliver);
             nextInstanceNoToDeliver++;
             noOfActiveInstances--;
+
             if(noOfActiveInstances < maxNoOfActiveInstances){
-                proposeLock.notifyAll();
+                proposeLock.notify();
             }
         }
+
+
+
+
+
     }
 
     public void deliver(LatticeDecision ld) throws IOException {
