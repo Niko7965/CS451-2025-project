@@ -74,6 +74,9 @@ public class LatticeAgreements extends Thread implements BebCallback{
 
 
             }
+            if(GlobalCfg.LA_LOOPDBG){
+                System.out.println("Released lock");
+            }
         }
     }
 
