@@ -20,6 +20,7 @@ public class LatticeVoter {
         ImmutableSet proposalSet = proposal.proposedSet;
 
         if(GlobalCfg.LA_VOTE_DBG){
+            System.out.println();
             System.out.println("Voting for instance no "+instanceNo+":");
             System.out.println("Proposal:");
             Main.printSet(proposalSet.getInner());
@@ -30,6 +31,8 @@ public class LatticeVoter {
         if (proposalSet.getInner().containsAll(acceptedValue.getInner())) {
             if(GlobalCfg.LA_VOTE_DBG){
                 System.out.println("Voted yes");
+                System.out.println();
+
             }
             this.acceptedValue = new ImmutableSet(proposalSet.getInner());
             return LatticeVote.positiveVoteFromProposal(proposal,selfId);
@@ -38,6 +41,7 @@ public class LatticeVoter {
         } else {
             if(GlobalCfg.LA_VOTE_DBG){
                 System.out.println("Voted no");
+                System.out.println();
             }
             this.acceptedValue = acceptedValue.addAll(proposalSet.getInner());
             return LatticeVote.negativeVoteFromProposal(proposal,selfId,acceptedValue.getInner());
