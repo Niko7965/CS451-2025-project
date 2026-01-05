@@ -4,7 +4,6 @@ import cs451.GlobalCfg;
 import cs451.OutputWriter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -89,7 +88,7 @@ public class InstanceLocker implements LatticeCallback {
 
     @Override
     public void onDeliver(LatticeDecision decision) {
-        if(GlobalCfg.LA_LOOPDBG){
+        if(GlobalCfg.LA_LOOP_DBG){
             System.out.println("Entered ondeliver");
         }
 
@@ -111,7 +110,7 @@ public class InstanceLocker implements LatticeCallback {
         }
 
 
-        if(GlobalCfg.LA_LOOPDBG){
+        if(GlobalCfg.LA_LOOP_DBG){
             System.out.println("Exited ondeliver");
         }
 

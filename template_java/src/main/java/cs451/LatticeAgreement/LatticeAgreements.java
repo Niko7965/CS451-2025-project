@@ -56,14 +56,14 @@ public class LatticeAgreements extends Thread implements BebCallback{
     public void loop() throws InterruptedException {
         while(true){
             Thread.sleep(1000);
-            if(GlobalCfg.LA_LOOPDBG){
+            if(GlobalCfg.LA_LOOP_DBG){
                 System.out.println("looping");
             }
 
 
             synchronized (latticeCallback.getInstanceCounterLock()) {
                 synchronized (lock) {
-                    if (GlobalCfg.LA_LOOPDBG) {
+                    if (GlobalCfg.LA_LOOP_DBG) {
                         System.out.println("got lock");
                     }
                     for (LatticeAgreement a : agreementForInstanceNo.values()) {
@@ -81,7 +81,7 @@ public class LatticeAgreements extends Thread implements BebCallback{
 
                 }
             }
-            if(GlobalCfg.LA_LOOPDBG){
+            if(GlobalCfg.LA_LOOP_DBG){
                 System.out.println("Released lock");
             }
 
