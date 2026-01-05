@@ -16,7 +16,7 @@ public class LatticeVoter {
         this.acceptedValue = new ImmutableSet();
     }
 
-    private LatticeVote getVoteForProposal(LatticeProposal proposal) {
+    private synchronized LatticeVote getVoteForProposal(LatticeProposal proposal) {
         ImmutableSet proposalSet = proposal.proposedSet;
 
         if(GlobalCfg.LA_VOTE_DBG){
