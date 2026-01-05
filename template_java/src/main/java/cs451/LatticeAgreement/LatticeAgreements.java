@@ -2,6 +2,7 @@ package cs451.LatticeAgreement;
 
 import cs451.BEB.BebCallback;
 import cs451.BEB.BestEffortBroadcast;
+import cs451.GlobalCfg;
 import cs451.Host;
 
 import java.net.SocketException;
@@ -49,8 +50,15 @@ public class LatticeAgreements extends Thread implements BebCallback{
 
     public void loop() throws InterruptedException {
         while(true){
-            //maybe on timer
+            Thread.sleep(1000);
+            if(GlobalCfg.LA_LOOPDBG){
+                System.out.println("looping");
+            }
+
             synchronized (agreementForInstanceNo){
+                if(GlobalCfg.LA_LOOPDBG){
+                    System.out.println("got lock");
+                }
                 for(LatticeAgreement a: agreementForInstanceNo.values()){
                     Optional<Set<Integer>> deliverableSetOption =  a.getDeliverableSet(noOfProcesses);
                     if(deliverableSetOption.isPresent()){
