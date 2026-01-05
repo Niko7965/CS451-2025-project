@@ -64,4 +64,8 @@ public class BestEffortBroadcast implements PLCallback {
     public void onShouldAck(PLMessageRegular m) {
         pl.onShouldAck(m);
     }
+
+    public void kill() {
+        pl.kill();
+    }
 }

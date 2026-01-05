@@ -122,4 +122,8 @@ public class LatticeAgreements extends Thread implements BebCallback{
             }
         }
     }
+
+    public void kill() {
+        beb.kill();
+    }
 }

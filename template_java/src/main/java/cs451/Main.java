@@ -17,13 +17,13 @@ import java.util.Set;
 
 public class Main {
     static OutputWriter outputWriter;
-    static UniformReliableBroadcast urb;
+    static LatticeAgreements LA;
 
     private static void handleSignal() {
         System.out.println("Immediately stopping network packet processing.");
-        urb.kill();
         try {
             outputWriter.close();
+            LA.kill();
 
         } catch (IOException ignored) {
         }
