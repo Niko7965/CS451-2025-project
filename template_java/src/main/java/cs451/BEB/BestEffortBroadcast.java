@@ -52,9 +52,8 @@ public class BestEffortBroadcast implements PLCallback {
             pl.sendMessage(payload,selfId,i);
         }
 
-        synchronized (bebCallback) {
-            bebCallback.onDeliver(payload);
-        }
+        bebCallback.onDeliver(payload);
+
     }
 
     @Override
