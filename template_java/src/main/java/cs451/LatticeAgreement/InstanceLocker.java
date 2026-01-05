@@ -88,6 +88,11 @@ public class InstanceLocker implements LatticeCallback {
 
     @Override
     public void onDeliver(LatticeDecision decision) {
+        if(GlobalCfg.LA_LOOPDBG){
+            System.out.println("Entered ondeliver");
+        }
+
+
         synchronized (proposeLock) {
 
             if(GlobalCfg.LOCKER_DEBUG){
@@ -101,6 +106,10 @@ public class InstanceLocker implements LatticeCallback {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        if(GlobalCfg.LA_LOOPDBG){
+            System.out.println("Exited ondeliver");
         }
 
     }
