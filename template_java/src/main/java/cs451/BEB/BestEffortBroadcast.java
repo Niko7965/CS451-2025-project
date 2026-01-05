@@ -63,21 +63,17 @@ public class BestEffortBroadcast implements PLCallback {
             System.out.println("BEB Delivered "+m.getPayload()+" from: "+m.getMetadata().getSenderId());
         }
 
-        synchronized (bebCallback) {
-            bebCallback.onDeliver(m.getPayload());
-        }
+       bebCallback.onDeliver(m.getPayload());
+
     }
 
     @Override
     public void onShouldAck(PLMessageRegular m) {
-        synchronized (pl) {
-            pl.onShouldAck(m);
-        }
+        pl.onShouldAck(m);
+
     }
 
     public void kill() {
-        synchronized (pl) {
-            pl.kill();
-        }
+        pl.kill();
     }
 }

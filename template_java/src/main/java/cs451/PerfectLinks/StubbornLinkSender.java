@@ -89,7 +89,9 @@ public class StubbornLinkSender extends Thread{
 
 
     public void kill(){
-        this.killed = true;
+        synchronized (killLock) {
+            this.killed = true;
+        }
     }
 
 
