@@ -39,9 +39,9 @@ public class InstanceLocker implements LatticeCallback {
     }
 
     public void propose(int instance, Set<Integer> proposalSet) throws InterruptedException {
-        synchronized (proposeLock) {
+        synchronized (LA.getLock()) {
             while (noOfActiveInstances >= maxNoOfActiveInstances) {
-                proposeLock.wait();
+                LA.getLock().wait();
             }
             LA.propose(instance, proposalSet);
             noOfActiveInstances++;
@@ -86,6 +86,8 @@ public class InstanceLocker implements LatticeCallback {
         }
     }
 
+
+
     @Override
     public void onDeliver(LatticeDecision decision) {
         if(GlobalCfg.LA_LOOPDBG){
@@ -93,20 +95,23 @@ public class InstanceLocker implements LatticeCallback {
         }
 
 
-        synchronized (proposeLock) {
+        synchronized (decisionQueue) {
 
-            if(GlobalCfg.LOCKER_DEBUG){
+            if (GlobalCfg.LOCKER_DEBUG) {
                 System.out.println("Got a decision to queue");
             }
 
             decisionQueue.add(decision);
+        }
 
+        synchronized (LA.getLock()){
             try {
                 tryDeliverFromQueue();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
+
 
         if(GlobalCfg.LA_LOOPDBG){
             System.out.println("Exited ondeliver");

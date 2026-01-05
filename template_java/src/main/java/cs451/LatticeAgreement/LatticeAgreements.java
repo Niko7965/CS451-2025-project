@@ -14,6 +14,8 @@ import java.util.Set;
 public class LatticeAgreements extends Thread implements BebCallback{
     //todo - lock on individual agreements
 
+
+    private final Object lock;
     private static Integer senderId;
     private final int noOfProcesses;
     private static BestEffortBroadcast beb;
@@ -27,6 +29,7 @@ public class LatticeAgreements extends Thread implements BebCallback{
         this.noOfProcesses = noOfProcesses;
         beb = new BestEffortBroadcast(selfHost,selfId,noOfProcesses,this);
         senderId = selfId;
+        this.lock = new Object();
         agreementForInstanceNo = new HashMap<>();
         this.latticeCallback = latticeCallback;
     }
@@ -48,6 +51,10 @@ public class LatticeAgreements extends Thread implements BebCallback{
         }
     }
 
+    public Object getLock(){
+        return lock;
+    }
+
     public void loop() throws InterruptedException {
         while(true){
             Thread.sleep(1000);
@@ -55,7 +62,7 @@ public class LatticeAgreements extends Thread implements BebCallback{
                 System.out.println("looping");
             }
 
-            synchronized (agreementForInstanceNo){
+            synchronized (lock){
                 if(GlobalCfg.LA_LOOPDBG){
                     System.out.println("got lock");
                 }
@@ -77,12 +84,13 @@ public class LatticeAgreements extends Thread implements BebCallback{
             if(GlobalCfg.LA_LOOPDBG){
                 System.out.println("Released lock");
             }
+
         }
     }
 
 
     public LatticeAgreement ensureExistsAgreementForInstance(int instanceNo){
-        synchronized (agreementForInstanceNo) {
+        synchronized (lock) {
             if (agreementForInstanceNo.containsKey(instanceNo)) {
                 return agreementForInstanceNo.get(instanceNo);
             }
@@ -93,21 +101,21 @@ public class LatticeAgreements extends Thread implements BebCallback{
     }
 
     public void propose(int instance, Set<Integer> proposalSet) throws InterruptedException {
-        synchronized (agreementForInstanceNo) {
+        synchronized (lock) {
             LatticeAgreement latticeAgreement = ensureExistsAgreementForInstance(instance);
             latticeAgreement.propose(proposalSet);
         }
     }
 
     public void giveVote(LatticeVote vote){
-        synchronized (agreementForInstanceNo) {
+        synchronized (lock) {
             LatticeAgreement latticeAgreement = ensureExistsAgreementForInstance(vote.instanceNo);
             latticeAgreement.takeVote(vote);
         }
     }
 
     public void sendVoteForProposal(LatticeProposal proposal) throws InterruptedException {
-        synchronized (agreementForInstanceNo) {
+        synchronized (lock) {
             LatticeAgreement latticeAgreement = ensureExistsAgreementForInstance(proposal.instanceNo);
             latticeAgreement.getVoter().sendVoteForProposal(proposal);
         }
