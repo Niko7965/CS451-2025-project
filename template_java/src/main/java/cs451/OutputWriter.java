@@ -7,15 +7,12 @@ import java.io.IOException;
 public class OutputWriter {
 //https://www.baeldung.com/java-synchronized was used as reference for sync
 
-    private final int maxBufferSize = 1;
     private final BufferedWriter writer;
-    int lineNo;
     boolean open;
 
     public OutputWriter(String path) throws IOException {
         writer = new BufferedWriter(new FileWriter(path));
         open = true;
-        lineNo = 0;
     }
 
     public void write(String s) throws IOException {
@@ -25,12 +22,8 @@ public class OutputWriter {
             }
 
             writer.write(s);
-            lineNo++;
+            writer.flush();
 
-            if(lineNo == maxBufferSize){
-                lineNo = 0;
-                writer.flush();
-            }
         }
     }
 

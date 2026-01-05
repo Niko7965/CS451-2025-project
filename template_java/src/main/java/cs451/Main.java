@@ -23,10 +23,12 @@ public class Main {
         System.out.println("Immediately stopping network packet processing.");
         try {
             outputWriter.close();
-            LA.kill();
 
         } catch (IOException ignored) {
         }
+
+        LA.kill();
+
         //write/flush output file if necessary
         System.out.println("Writing output.");
     }
