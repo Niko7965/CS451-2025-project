@@ -69,12 +69,21 @@ public class InstanceLocker implements LatticeCallback {
     public void deliver(LatticeDecision ld) throws IOException {
         Set<Integer> decisionSet = ld.decidedSet;
 
-        if(GlobalCfg.LA_DBG || GlobalCfg.LA_SPARSE_DBG || GlobalCfg.MAIN_OUT_DEBUG){
-            System.out.println("Decided on set for instance "+ld.instanceNo+":");
+        if (GlobalCfg.LA_DBG || GlobalCfg.LA_SPARSE_DBG || GlobalCfg.MAIN_OUT_DEBUG) {
+
+            System.out.println();
+            System.out.println("############################################");
+            System.out.println("Decided on set for instance " + ld.instanceNo + ":");
+            System.out.println("############################################");
+
 
         }
-        outputWriter.write(setToString(decisionSet)+"\n");
+        outputWriter.write(setToString(decisionSet) + "\n");
         printSet(decisionSet);
+
+        if (GlobalCfg.LA_DBG || GlobalCfg.LA_SPARSE_DBG || GlobalCfg.MAIN_OUT_DEBUG) {
+            System.out.println();
+        }
     }
 
     @Override
