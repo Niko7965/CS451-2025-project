@@ -11,8 +11,8 @@ import java.net.UnknownHostException;
 
 public class BestEffortBroadcast implements PLCallback {
 
-    PerfectLink pl;
-    BebCallback bebCallback;
+    final PerfectLink pl;
+    final BebCallback bebCallback;
     int selfId;
     int noOfTargets;
 
@@ -32,7 +32,9 @@ public class BestEffortBroadcast implements PLCallback {
 //           return;
 //        }
 
-        pl.sendMessage(payload,selfId,targetNo);
+        synchronized (pl) {
+            pl.sendMessage(payload, selfId, targetNo);
+        }
     }
 
 
@@ -49,7 +51,10 @@ public class BestEffortBroadcast implements PLCallback {
             }
             pl.sendMessage(payload,selfId,i);
         }
-        bebCallback.onDeliver(payload);
+
+        synchronized (bebCallback) {
+            bebCallback.onDeliver(payload);
+        }
     }
 
     @Override
@@ -57,15 +62,22 @@ public class BestEffortBroadcast implements PLCallback {
         if(GlobalCfg.BEB_DBG){
             System.out.println("BEB Delivered "+m.getPayload()+" from: "+m.getMetadata().getSenderId());
         }
-        bebCallback.onDeliver(m.getPayload());
+
+        synchronized (bebCallback) {
+            bebCallback.onDeliver(m.getPayload());
+        }
     }
 
     @Override
     public void onShouldAck(PLMessageRegular m) {
-        pl.onShouldAck(m);
+        synchronized (pl) {
+            pl.onShouldAck(m);
+        }
     }
 
     public void kill() {
-        pl.kill();
+        synchronized (pl) {
+            pl.kill();
+        }
     }
 }
