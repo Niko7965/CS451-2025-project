@@ -93,25 +93,22 @@ public class LatticeAgreements extends Thread implements BebCallback{
     }
 
     public void propose(int instance, Set<Integer> proposalSet) throws InterruptedException {
-        LatticeAgreement latticeAgreement = ensureExistsAgreementForInstance(instance);
-        synchronized (latticeAgreement) {
+        synchronized (agreementForInstanceNo) {
+            LatticeAgreement latticeAgreement = ensureExistsAgreementForInstance(instance);
             latticeAgreement.propose(proposalSet);
         }
-
     }
 
     public void giveVote(LatticeVote vote){
-        LatticeAgreement latticeAgreement = ensureExistsAgreementForInstance(vote.instanceNo);
-
-        synchronized (latticeAgreement){
+        synchronized (agreementForInstanceNo) {
+            LatticeAgreement latticeAgreement = ensureExistsAgreementForInstance(vote.instanceNo);
             latticeAgreement.takeVote(vote);
         }
     }
 
     public void sendVoteForProposal(LatticeProposal proposal) throws InterruptedException {
-        LatticeAgreement latticeAgreement = ensureExistsAgreementForInstance(proposal.instanceNo);
-
-        synchronized (latticeAgreement){
+        synchronized (agreementForInstanceNo) {
+            LatticeAgreement latticeAgreement = ensureExistsAgreementForInstance(proposal.instanceNo);
             latticeAgreement.getVoter().sendVoteForProposal(proposal);
         }
     }
