@@ -15,18 +15,19 @@ public class InstanceLocker implements LatticeCallback {
     private LatticeAgreements LA;
     private int noOfActiveInstances;
     private int nextInstanceNoToDeliver;
-    private final Object proposeLock;
     private final PriorityQueue<LatticeDecision> decisionQueue;
     private final OutputWriter outputWriter;
 
 
 
     //todo change
+    private final Object instanceCounterLock;
+
     public static final int maxNoOfActiveInstances = 5;
 
 
     public InstanceLocker(OutputWriter outputWriter){
-        this.proposeLock = new Object();
+        this.instanceCounterLock = new Object();
         this.noOfActiveInstances = 0;
         this.nextInstanceNoToDeliver = 0;
         this.decisionQueue = new PriorityQueue<>(Comparator.comparingInt(ld -> ld.instanceNo));
@@ -35,17 +36,20 @@ public class InstanceLocker implements LatticeCallback {
 
     public void giveLA(LatticeAgreements LA){
         this.LA = LA;
-
     }
 
     public void propose(int instance, Set<Integer> proposalSet) throws InterruptedException {
-        synchronized (LA.getLock()) {
+        synchronized (instanceCounterLock) {
             while (noOfActiveInstances >= maxNoOfActiveInstances) {
-                LA.getLock().wait();
+                instanceCounterLock.wait();
             }
             LA.propose(instance, proposalSet);
             noOfActiveInstances++;
         }
+    }
+
+    public Object getInstanceCounterLock(){
+        return instanceCounterLock;
     }
 
     public void tryDeliverFromQueue() throws IOException {
@@ -56,14 +60,9 @@ public class InstanceLocker implements LatticeCallback {
             noOfActiveInstances--;
 
             if(noOfActiveInstances < maxNoOfActiveInstances){
-                proposeLock.notify();
+                instanceCounterLock.notify();
             }
         }
-
-
-
-
-
     }
 
     public void deliver(LatticeDecision ld) throws IOException {
@@ -95,16 +94,15 @@ public class InstanceLocker implements LatticeCallback {
         }
 
 
-        synchronized (decisionQueue) {
+        synchronized (instanceCounterLock) {
 
             if (GlobalCfg.LOCKER_DEBUG) {
                 System.out.println("Got a decision to queue");
             }
 
             decisionQueue.add(decision);
-        }
 
-        synchronized (LA.getLock()){
+
             try {
                 tryDeliverFromQueue();
             } catch (IOException e) {

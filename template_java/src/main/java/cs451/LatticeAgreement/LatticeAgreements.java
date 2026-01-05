@@ -19,13 +19,13 @@ public class LatticeAgreements extends Thread implements BebCallback{
     private static Integer senderId;
     private final int noOfProcesses;
     private static BestEffortBroadcast beb;
-    private final LatticeCallback latticeCallback;
+    private final InstanceLocker latticeCallback;
 
 
     private final HashMap<Integer,LatticeAgreement> agreementForInstanceNo;
 
 
-    public LatticeAgreements(int selfId, int noOfProcesses, Host selfHost, LatticeCallback latticeCallback) throws SocketException, UnknownHostException {
+    public LatticeAgreements(int selfId, int noOfProcesses, Host selfHost, InstanceLocker latticeCallback) throws SocketException, UnknownHostException {
         this.noOfProcesses = noOfProcesses;
         beb = new BestEffortBroadcast(selfHost,selfId,noOfProcesses,this);
         senderId = selfId;
@@ -51,9 +51,7 @@ public class LatticeAgreements extends Thread implements BebCallback{
         }
     }
 
-    public Object getLock(){
-        return lock;
-    }
+
 
     public void loop() throws InterruptedException {
         while(true){
@@ -62,24 +60,26 @@ public class LatticeAgreements extends Thread implements BebCallback{
                 System.out.println("looping");
             }
 
-            synchronized (lock){
-                if(GlobalCfg.LA_LOOPDBG){
-                    System.out.println("got lock");
-                }
-                for(LatticeAgreement a: agreementForInstanceNo.values()){
-                    Optional<Set<Integer>> deliverableSetOption =  a.getDeliverableSet(noOfProcesses);
-                    if(deliverableSetOption.isPresent()){
-                        LatticeDecision decision = new LatticeDecision(a.getInstanceNo(),deliverableSetOption.get());
-                        latticeCallback.onDeliver(decision);
-                        //todo deliver; maybe remove from list
-                        //todo Actually, can only do this if enough votes have been sent as well
+
+            synchronized (latticeCallback.getInstanceCounterLock()) {
+                synchronized (lock) {
+                    if (GlobalCfg.LA_LOOPDBG) {
+                        System.out.println("got lock");
                     }
-                    else {
-                        a.reBroadcastIfNackedAndSufficientlyVoted(noOfProcesses);
+                    for (LatticeAgreement a : agreementForInstanceNo.values()) {
+                        Optional<Set<Integer>> deliverableSetOption = a.getDeliverableSet(noOfProcesses);
+                        if (deliverableSetOption.isPresent()) {
+                            LatticeDecision decision = new LatticeDecision(a.getInstanceNo(), deliverableSetOption.get());
+                            latticeCallback.onDeliver(decision);
+                            //todo deliver; maybe remove from list
+                            //todo Actually, can only do this if enough votes have been sent as well
+                        } else {
+                            a.reBroadcastIfNackedAndSufficientlyVoted(noOfProcesses);
+                        }
                     }
-                }
 
 
+                }
             }
             if(GlobalCfg.LA_LOOPDBG){
                 System.out.println("Released lock");
